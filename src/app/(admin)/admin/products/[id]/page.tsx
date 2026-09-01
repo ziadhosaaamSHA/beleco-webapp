@@ -245,7 +245,7 @@ export default function AdminProductDetailsPage() {
   return (
     <div className="relative h-full w-full flex flex-col overflow-hidden">
       <StandardPageLayout enableNavOffset={false}>
-        <div className="flex flex-col gap-4 px-4 pt-2 pb-24 text-left" dir="ltr">
+        <div className="flex flex-col gap-4 px-4 pt-2 pb-32 text-left" dir="ltr">
           
           {/* Top Info Bar (ID & Status) */}
           <div className="flex items-center justify-between gap-2">
@@ -468,7 +468,10 @@ export default function AdminProductDetailsPage() {
       </StandardPageLayout>
 
       {/* Sticky Bottom Actions Bar */}
-      <div className="sticky bottom-0 z-20 bg-white/95 backdrop-blur-md p-3 border-t border-brand-neutral-200/90 flex items-center justify-between gap-2 max-w-[480px] mx-auto w-full">
+      <div
+        className="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md border-t border-brand-neutral-200 p-4 shadow-xl flex items-center justify-between gap-3 max-w-[480px] mx-auto w-full"
+        style={{ paddingBottom: "calc(18px + env(safe-area-inset-bottom, 0px))" }}
+      >
         <Link href={`/admin/products/${product.id}/edit`} className="flex-1">
           <Button
             variant="primary"

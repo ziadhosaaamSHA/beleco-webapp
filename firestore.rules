@@ -13,17 +13,15 @@ service cloud.firestore {
     }
 
     // Orders:
-    // - Single-document reads (get) stay open, gated by knowledge of the
-    //   random orderId (capability token) — needed before the customer is
-    //   logged in, e.g. right after pasting her cart link.
-    // - Listing/querying the collection (list) is only allowed when the
-    //   query is scoped to the signed-in user's own orders, so nobody can
-    //   enumerate other customers' orders.
-    // Writes always go server-side via Cloud Functions (Admin SDK).
+    // - Single-document reads (get) stay open, gated by knowledge of orderId.
+    // - Listing/querying is allowed for admin or the user's own orders.
+    // - Creation is allowed for any customer/guest placing an order.
+    // - Update / Delete is restricted to admins.
     match /orders/{orderId} {
       allow get: if true;
       allow list: if request.auth != null && (request.auth.uid == resource.data.customerUid || isAdmin());
-      allow write: if isAdmin();
+      allow create: if true;
+      allow update, delete: if isAdmin();
     }
 
     // User profile (name/phone/default address) — each signed-in user can

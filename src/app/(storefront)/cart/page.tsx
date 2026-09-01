@@ -66,6 +66,7 @@ export default function CartPage() {
 
   const [isLocating, setIsLocating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
 
   // Load saved addresses on mount
   useEffect(() => {
@@ -198,6 +199,7 @@ export default function CartPage() {
     }
 
     setIsSubmitting(true);
+    setOrderError(null);
     try {
       // Save address for later if opted
       if (selectedAddressMode === "custom" && saveForLater) {
@@ -249,9 +251,16 @@ export default function CartPage() {
       showToast(t("cart.orderSuccess"), "success");
       clearCart();
       router.push("/orders");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Order submission failed:", err);
-      showToast(lang === "ar" ? "حدث خطأ أثناء تسجيل الطلب، يرجى المحاولة ثانية" : "Failed to place order", "error");
+      const errMsg = err?.message || (lang === "ar" ? "تعذر إتمام الطلب، يرجى المحاولة ثانية" : "Failed to place order, please try again");
+      setOrderError(errMsg);
+      showToast(
+        lang === "ar"
+          ? "فشل إرسال الطلب، يرجى التأكد من الاتصال بالإنترنت والمحاولة مجدداً"
+          : "Failed to place order. Please check your connection and try again",
+        "error"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -613,6 +622,22 @@ export default function CartPage() {
                 onChange={(e) => setNotes(e.target.value)}
                 aria-label={t("cart.notes")}
               />
+
+              {orderError && (
+                <div className="p-3 rounded-xl bg-danger-50 border border-danger-200 text-danger-800 text-xs font-sans flex items-start gap-2 animate-in fade-in-50 zoom-in-98 duration-150">
+                  <div className="p-1 rounded-lg bg-white text-danger-600 shrink-0 shadow-2xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 rotate-45" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold">
+                      {lang === "ar" ? "تعذر إتمام الطلب" : "Order Submission Failed"}
+                    </span>
+                    <span className="text-[11px] text-danger-700 leading-relaxed">
+                      {orderError}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               <Button
                 type="submit"

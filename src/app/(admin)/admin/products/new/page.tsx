@@ -271,7 +271,7 @@ export default function AddNewProductPage() {
         backHref="/admin/products"
         enableNavOffset={false}
       >
-        <div className="flex flex-col gap-4 px-4 pt-1 pb-24 text-left" dir="ltr">
+        <div className="flex flex-col gap-4 px-4 pt-1 pb-32 text-left" dir="ltr">
           {/* 1. Auto Extraction Card */}
           <Card className="p-4 flex flex-col gap-3 bg-white border border-brand-neutral-200/90 shadow-xs">
             <div className="flex items-center gap-2">
@@ -639,7 +639,10 @@ export default function AddNewProductPage() {
       </StandardPageLayout>
 
       {/* Sticky Bottom Actions Bar */}
-      <div className="sticky bottom-0 z-20 bg-white/95 backdrop-blur-md p-3 border-t border-brand-neutral-200/90 flex items-center justify-between gap-2 max-w-[480px] mx-auto w-full">
+      <div
+        className="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md border-t border-brand-neutral-200 p-4 shadow-xl flex items-center justify-between gap-3 max-w-[480px] mx-auto w-full"
+        style={{ paddingBottom: "calc(18px + env(safe-area-inset-bottom, 0px))" }}
+      >
         <Button
           type="button"
           variant="secondary"
