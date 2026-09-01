@@ -1,6 +1,32 @@
-export type ProductCategory = "abaya" | "dress" | "set" | "hijab" | "shoes" | "bag" | "accessory" | "other";
+export type ProductCategory =
+  | "women"
+  | "kids"
+  | "premium"
+  | "sale"
+  | "general"
+  | "abaya"
+  | "dress"
+  | "set"
+  | "hijab"
+  | "shoes"
+  | "bag"
+  | "accessory"
+  | "other"
+  | string;
 
-export type ProductPlacement = "featured" | "new_arrival" | "influencer_pick" | "trending" | "standard";
+export type ProductPlacement =
+  | "trend"
+  | "fashion"
+  | "beauty"
+  | "homeware"
+  | "summer"
+  | "picks"
+  | "featured"
+  | "new_arrival"
+  | "influencer_pick"
+  | "trending"
+  | "standard"
+  | string;
 
 export interface Product {
   id: string;
@@ -9,11 +35,17 @@ export interface Product {
   price: number;
   originalPrice?: number;
   imageUrl: string;
-  imagePath?: string;
+  imagePath?: string | null;
   category: ProductCategory;
-  placement: ProductPlacement;
+  placement?: ProductPlacement;
+  placements?: string[];
+  color?: string | null;
+  colors?: string[];
+  size?: string | null;
+  sizes?: string[];
+  link?: string | null;
   description?: string;
-  inStock: boolean;
+  inStock?: boolean;
   stockCount?: number;
   rating?: number;
   creatorTag?: string;

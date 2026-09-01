@@ -28,6 +28,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState("M");
+  const [selectedColor, setSelectedColor] = useState<string>("");
   const [isLiked, setIsLiked] = useState(false);
   const [isAddedRecently, setIsAddedRecently] = useState(false);
 
@@ -43,6 +44,18 @@ export default function ProductDetailPage() {
       .getProductById(productId)
       .then((data) => {
         setProduct(data);
+        if (data) {
+          if (Array.isArray(data.sizes) && data.sizes.length > 0) {
+            setSelectedSize(data.sizes[0]);
+          } else if (data.size) {
+            setSelectedSize(data.size);
+          }
+          if (Array.isArray(data.colors) && data.colors.length > 0) {
+            setSelectedColor(data.colors[0]);
+          } else if (data.color) {
+            setSelectedColor(data.color);
+          }
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -61,6 +74,7 @@ export default function ProductDetailPage() {
         originalPrice: product.originalPrice,
         imageUrl: product.imageUrl,
         selectedSize,
+        selectedColor: selectedColor || undefined,
       });
       setIsAddedRecently(true);
       setTimeout(() => setIsAddedRecently(false), 2000);
@@ -205,26 +219,73 @@ export default function ProductDetailPage() {
           <div className="h-px bg-brand-neutral-100" />
 
           {/* Size Selector */}
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-sans font-bold text-brand-neutral-950">
-              {t("product.selectSize")}
-            </span>
-            <div className="flex items-center gap-2">
-              {defaultSizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`w-11 h-11 rounded-xl text-xs font-mono font-bold border transition-all ${
-                    selectedSize === size
-                      ? "bg-brand-neutral-950 text-white border-brand-neutral-950 shadow-xs"
-                      : "bg-brand-neutral-50 text-brand-neutral-800 border-brand-neutral-200 hover:border-brand-neutral-400"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
+          {((Array.isArray(product.sizes) && product.sizes.length > 0) || product.size || defaultSizes.length > 0) && (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-sans font-bold text-brand-neutral-950">
+                  {t("product.selectSize")}
+                </span>
+                <span className="text-xs font-mono font-bold text-primary-600">
+                  {selectedSize}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+                {(Array.isArray(product.sizes) && product.sizes.length > 0
+                  ? product.sizes
+                  : product.size
+                  ? [product.size]
+                  : defaultSizes
+                ).map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`min-w-[44px] h-11 px-3 rounded-xl text-xs font-mono font-bold border transition-all shrink-0 ${
+                      selectedSize === size
+                        ? "bg-brand-neutral-950 text-white border-brand-neutral-950 shadow-xs scale-102"
+                        : "bg-brand-neutral-50 text-brand-neutral-800 border-brand-neutral-200 hover:border-brand-neutral-400"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Color Selector (if available) */}
+          {((Array.isArray(product.colors) && product.colors.length > 0) || product.color) && (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-sans font-bold text-brand-neutral-950">
+                  {lang === "ar" ? "اختيار اللون" : "Select Color"}
+                </span>
+                <span className="text-xs font-sans font-bold text-primary-600">
+                  {selectedColor}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+                {(Array.isArray(product.colors) && product.colors.length > 0
+                  ? product.colors
+                  : product.color
+                  ? [product.color]
+                  : []
+                ).map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setSelectedColor(color)}
+                    className={`px-3.5 h-10 rounded-xl text-xs font-sans font-bold border transition-all flex items-center gap-1.5 shrink-0 ${
+                      selectedColor === color
+                        ? "bg-brand-neutral-950 text-white border-brand-neutral-950 shadow-xs scale-102"
+                        : "bg-brand-neutral-50 text-brand-neutral-800 border-brand-neutral-200 hover:border-brand-neutral-400"
+                    }`}
+                  >
+                    <span className="w-2.5 h-2.5 rounded-full bg-primary-500 shrink-0" />
+                    <span>{color}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Description */}
           {product.description && (

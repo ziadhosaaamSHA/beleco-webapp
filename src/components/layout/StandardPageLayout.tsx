@@ -15,6 +15,7 @@ export interface StandardPageLayoutProps {
   className?: string;
   onRefresh?: () => Promise<void>;
   scrollLocked?: boolean;
+  enableNavOffset?: boolean;
 }
 
 export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
@@ -27,6 +28,7 @@ export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
   className,
   onRefresh,
   scrollLocked = false,
+  enableNavOffset = true,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -118,7 +120,9 @@ export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
           className
         )}
         style={{
-          paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
+          paddingBottom: enableNavOffset
+            ? "calc(88px + env(safe-area-inset-bottom, 0px))"
+            : "env(safe-area-inset-bottom, 0px)",
         }}
       >
         {children}

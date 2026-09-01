@@ -11,6 +11,7 @@ export interface ModalProps {
   title?: string;
   icon?: React.ReactNode;
   children: React.ReactNode;
+  footer?: React.ReactNode;
   className?: string;
   maxWidth?: "sm" | "md" | "lg" | "xl";
 }
@@ -21,18 +22,22 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   icon,
   children,
+  footer,
   className,
   maxWidth = "md",
 }) => {
   useEffect(() => {
     if (isOpen) {
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalHtmlOverflow = document.documentElement.style.overflow;
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "hidden";
+
+      return () => {
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalHtmlOverflow;
+      };
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -46,21 +51,20 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-brand-neutral-950/60 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-brand-neutral-950/60 backdrop-blur-xs p-4 sm:p-6 pb-24 sm:pb-6 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          "w-full bg-white rounded-t-[28px] sm:rounded-3xl p-6 border border-brand-neutral-200 shadow-2xl flex flex-col gap-4 animate-sheet-up max-h-[90vh] overflow-y-auto",
+          "w-full bg-white rounded-3xl border border-brand-neutral-200/90 shadow-2xl flex flex-col overflow-hidden max-h-[75vh] sm:max-h-[82vh] animate-in zoom-in-95 duration-200",
           maxWidthClasses[maxWidth],
           className
         )}
-        style={{ paddingBottom: "calc(24px + env(safe-area-inset-bottom, 0px))" }}
       >
-        {/* Header */}
+        {/* Sticky Top Header */}
         {(title || icon) && (
-          <div className="flex items-center justify-between border-b border-brand-neutral-100 pb-3">
+          <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md px-5 py-4 border-b border-brand-neutral-100 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
               {icon && (
                 <div className="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
@@ -83,8 +87,17 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         )}
 
-        {/* Modal Body */}
-        <div className="flex flex-col gap-3">{children}</div>
+        {/* Scrollable Modal Body */}
+        <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-4 flex flex-col gap-3.5">
+          {children}
+        </div>
+
+        {/* Sticky Bottom Footer */}
+        {footer && (
+          <div className="sticky bottom-0 z-20 bg-white/95 backdrop-blur-md px-5 py-3.5 border-t border-brand-neutral-100 flex items-center shrink-0">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );

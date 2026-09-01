@@ -195,20 +195,46 @@ export default function StorefrontHomePage() {
     // Toast is handled automatically with localized name in CartContext.addToCart
   };
 
-  // Filtered products based on active subtab
+  // Filtered products based on active subtab & gender category
   const filteredProducts = products.filter((p) => {
-    if (activeSubtab === "beauty") return p.category === "accessory";
-    if (activeSubtab === "picks") return p.placement === "influencer_pick";
-    if (activeSubtab === "summer") return p.placement === "trending";
-    return true;
+    const matchesSubtab =
+      activeSubtab === "all" ||
+      p.placement === activeSubtab ||
+      (Array.isArray(p.placements) && p.placements.includes(activeSubtab)) ||
+      (activeSubtab === "beauty" && (p.category === "beauty" || p.category === "accessory")) ||
+      (activeSubtab === "picks" && (p.placement === "influencer_pick" || p.placements?.includes("picks"))) ||
+      (activeSubtab === "summer" && (p.placement === "trending" || p.placements?.includes("summer")));
+
+    const matchesCategory =
+      !activeGenderCat ||
+      activeGenderCat === "women" ||
+      p.category === activeGenderCat ||
+      (activeGenderCat === "premium" && (p.category === "premium" || p.price > 1200)) ||
+      (activeGenderCat === "sale" && (p.category === "sale" || Boolean(p.originalPrice && p.originalPrice > p.price)));
+
+    return matchesSubtab && matchesCategory;
   });
 
   const searchedProducts = searchQuery.trim()
     ? products.filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase().trim()))
     : [];
 
-  const displayTrending = products.filter((p) => p.placement === "trending" || p.placement === "featured").slice(0, 6);
-  const displayInfluencer = products.filter((p) => p.placement === "influencer_pick").slice(0, 6);
+  const displayTrending = products
+    .filter(
+      (p) =>
+        p.placement === "trending" ||
+        p.placement === "featured" ||
+        (Array.isArray(p.placements) && (p.placements.includes("trend") || p.placements.includes("fashion")))
+    )
+    .slice(0, 6);
+
+  const displayInfluencer = products
+    .filter(
+      (p) =>
+        p.placement === "influencer_pick" ||
+        (Array.isArray(p.placements) && p.placements.includes("picks"))
+    )
+    .slice(0, 6);
 
   // Show rich full page skeleton while language or products are loading
   if (!isLangReady || loading) {
@@ -231,7 +257,8 @@ export default function StorefrontHomePage() {
               : t("home.welcome")}
           </Heading>
         </div>
-
+        {/* ---------------- 2. STICKY CONTROLS (SEARCH + CATEGORIES) ---------------- */}
+        <div className="sticky-controls sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-brand-neutral-200/90 px-4 pt-2.5 pb-2.5 flex flex-col gap-2">
         {/* ---------------- 2. SUBTABS ROW ---------------- */}
         <div className="subtabs-section px-4">
           <div className="subtabs-row flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 -mx-4 px-4">
@@ -255,9 +282,6 @@ export default function StorefrontHomePage() {
             })}
           </div>
         </div>
-
-        {/* ---------------- 3. STICKY CONTROLS (SEARCH + CATEGORIES) ---------------- */}
-        <div className="sticky-controls sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-brand-neutral-200/90 px-4 pt-2.5 pb-2.5 flex flex-col gap-2">
           {/* Search Trigger Bar */}
           <div className="search-wrap relative flex items-center">
             <button

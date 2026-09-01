@@ -22,7 +22,16 @@ export interface TopHeaderBarProps {
   onOpenMenu?: () => void;
 }
 
-const ROOT_PATHS = ["/", "/reels", "/cart", "/account", "/admin"];
+const ROOT_PATHS = [
+  "/",
+  "/reels",
+  "/cart",
+  "/account",
+  "/admin",
+  "/admin/orders",
+  "/admin/products",
+  "/admin/reels",
+];
 
 export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({
   title,
@@ -41,7 +50,13 @@ export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({
   const isChildPage = showBack !== undefined ? showBack : !ROOT_PATHS.includes(pathname);
 
   // Derive default back destination if needed
-  const defaultBackHref = pathname.endsWith("/tracking") && pathname.startsWith("/orders/")
+  const defaultBackHref = pathname.startsWith("/admin/products/")
+    ? "/admin/products"
+    : pathname.startsWith("/admin/reels/")
+    ? "/admin/reels"
+    : pathname.startsWith("/admin/")
+    ? "/admin"
+    : pathname.endsWith("/tracking") && pathname.startsWith("/orders/")
     ? pathname.replace("/tracking", "")
     : pathname.startsWith("/orders/")
     ? "/orders"
@@ -54,6 +69,12 @@ export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({
   // Derive default localized page title if not explicitly passed
   const getResolvedTitle = (): string => {
     if (title) return title;
+    if (pathname === "/admin/products/new") return lang === "ar" ? "إضافة منتج جديد" : "Add New Product";
+    if (pathname === "/admin/reels/new") return lang === "ar" ? "نشر فيديو ريل جديد" : "Upload New Reel";
+    if (pathname === "/admin/orders") return lang === "ar" ? "إدارة الطلبات" : "Orders Management";
+    if (pathname === "/admin/products") return lang === "ar" ? "كتالوج المنتجات" : "Products Catalog";
+    if (pathname === "/admin/reels") return lang === "ar" ? "إدارة الريلز" : "Reels Management";
+    if (pathname === "/admin") return lang === "ar" ? "نقطة بيع البازار (POS)" : "Bazaar POS";
     if (pathname === "/orders") return t("account.myOrders");
     if (pathname.endsWith("/tracking")) return t("account.tracking");
     if (pathname.startsWith("/orders/")) return lang === "ar" ? "تفاصيل الطلب" : "Order Details";

@@ -306,8 +306,21 @@ export default function MyAddressesPage() {
           onClose={() => setIsModalOpen(false)}
           title={t("address.add")}
           icon={<MapPin className="w-4 h-4" />}
+          footer={
+            <Button
+              type="submit"
+              form="add-address-form"
+              variant="primary"
+              size="lg"
+              isLoading={isSubmitting}
+              leftIcon={<Check className="w-4 h-4" />}
+              className="w-full font-bold shadow-md justify-center"
+            >
+              {t("address.save")}
+            </Button>
+          }
         >
-          <form onSubmit={handleAddAddress} className="flex flex-col gap-3">
+          <form id="add-address-form" onSubmit={handleAddAddress} className="flex flex-col gap-3">
             {/* Rapid Geolocation Auto-Fill Button */}
             <button
               type="button"
@@ -387,17 +400,6 @@ export default function MyAddressesPage() {
               />
               <span>{lang === "ar" ? "تعيين كعنوان استلام افتراضي" : "Set as default delivery address"}</span>
             </label>
-
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={isSubmitting}
-              leftIcon={<Check className="w-4 h-4" />}
-              className="mt-2 font-bold shadow-md"
-            >
-              {t("address.save")}
-            </Button>
           </form>
         </Modal>
       </div>

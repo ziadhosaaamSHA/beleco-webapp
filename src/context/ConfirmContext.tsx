@@ -29,6 +29,20 @@ export const ConfirmProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const { lang } = useLanguage();
 
+  React.useEffect(() => {
+    if (modalState?.isOpen) {
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalHtmlOverflow = document.documentElement.style.overflow;
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+
+      return () => {
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalHtmlOverflow;
+      };
+    }
+  }, [modalState?.isOpen]);
+
   const confirm = useCallback((options: ConfirmOptions): Promise<boolean> => {
     return new Promise((resolve) => {
       setModalState({
@@ -50,9 +64,9 @@ export const ConfirmProvider: React.FC<{ children: React.ReactNode }> = ({ child
     <ConfirmContext.Provider value={{ confirm }}>
       {children}
       {modalState?.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-neutral-950/60 backdrop-blur-sm animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pb-24 sm:pb-4 bg-brand-neutral-950/60 backdrop-blur-sm animate-in fade-in duration-150">
           <div
-            className="w-full max-w-sm bg-white rounded-3xl p-5 border border-brand-neutral-200 shadow-2xl flex flex-col gap-4 animate-modal-pop text-left"
+            className="w-full max-w-sm bg-white rounded-3xl p-5 border border-brand-neutral-200 shadow-2xl flex flex-col gap-4 animate-modal-pop text-left my-auto"
             dir="ltr"
           >
             <div className="flex items-center justify-between">
