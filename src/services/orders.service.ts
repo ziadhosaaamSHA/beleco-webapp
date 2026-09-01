@@ -83,16 +83,11 @@ export const ordersService = {
         callback(orders);
       },
       (err) => {
-        // Fallback in case of index constraint on orderBy
-        const fallbackQ = query(collection(db, ORDERS_COL));
-        return onSnapshot(
-          fallbackQ,
-          (snap) => {
-            const orders = mapAndSortOrders(snap.docs);
-            callback(orders);
-          },
-          onError
-        );
+        if (onError) {
+          onError(err);
+        } else {
+          console.warn("Orders subscription error:", err.message);
+        }
       }
     );
   },

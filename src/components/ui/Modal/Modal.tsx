@@ -51,13 +51,13 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-brand-neutral-950/60 backdrop-blur-xs p-4 sm:p-6 pb-24 sm:pb-6 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-brand-neutral-950/60 backdrop-blur-xs p-4 sm:p-6 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          "w-full bg-white rounded-3xl border border-brand-neutral-200/90 shadow-2xl flex flex-col overflow-hidden max-h-[75vh] sm:max-h-[82vh] animate-in zoom-in-95 duration-200",
+          "w-full bg-white rounded-3xl border border-brand-neutral-200/90 shadow-2xl flex flex-col overflow-hidden max-h-[82vh] sm:max-h-[85vh] animate-in zoom-in-95 duration-200 my-auto",
           maxWidthClasses[maxWidth],
           className
         )}

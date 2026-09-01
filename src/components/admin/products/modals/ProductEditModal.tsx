@@ -267,45 +267,47 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
         </div>
 
         {/* Name */}
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-sans font-bold text-brand-neutral-800">
-            {lang === "ar" ? "اسم المنتج" : "Product Name"}
-          </label>
-          <input
-            type="text"
-            value={editForm.name}
-            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-brand-neutral-200 text-xs font-sans text-brand-neutral-900 outline-none focus:border-primary-500"
-            required
-          />
-        </div>
+        <input
+          type="text"
+          placeholder={
+            lang === "ar"
+              ? "اسم المنتج وتفاصيل القطعة (مثال: فستان سهرة مطرز)"
+              : "Product Name & Details (e.g. Elegant Dress)"
+          }
+          value={editForm.name}
+          onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+          aria-label={lang === "ar" ? "اسم المنتج" : "Product Name"}
+          className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-brand-neutral-200 text-xs font-sans text-brand-neutral-900 placeholder:text-brand-neutral-400 outline-none focus:border-primary-500"
+          required
+        />
 
         {/* Prices */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-sans font-bold text-brand-neutral-800">
-              {lang === "ar" ? "السعر (جنيه)" : "Price (EGP)"}
-            </label>
-            <input
-              type="number"
-              value={editForm.price}
-              onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-              className="w-full px-3.5 py-2 rounded-xl bg-white border border-brand-neutral-200 text-xs font-mono font-bold text-brand-neutral-900 outline-none focus:border-primary-500"
-              required
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-sans font-bold text-brand-neutral-800">
-              {lang === "ar" ? "السعر قبل الخصم" : "Original Price"}
-            </label>
-            <input
-              type="number"
-              placeholder="مثال: 850"
-              value={editForm.originalPrice}
-              onChange={(e) => setEditForm({ ...editForm, originalPrice: e.target.value })}
-              className="w-full px-3.5 py-2 rounded-xl bg-white border border-brand-neutral-200 text-xs font-mono text-brand-neutral-900 outline-none focus:border-primary-500"
-            />
-          </div>
+          <input
+            type="number"
+            placeholder={
+              lang === "ar"
+                ? "سعر البيع بالجنيه (مثال: 650)"
+                : "Price in EGP (e.g. 650)"
+            }
+            value={editForm.price}
+            onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+            aria-label={lang === "ar" ? "سعر البيع" : "Price"}
+            className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-brand-neutral-200 text-xs font-mono font-bold text-brand-neutral-900 placeholder:text-brand-neutral-400 outline-none focus:border-primary-500"
+            required
+          />
+          <input
+            type="number"
+            placeholder={
+              lang === "ar"
+                ? "السعر قبل الخصم (اختياري، 850)"
+                : "Original Price (Optional, 850)"
+            }
+            value={editForm.originalPrice}
+            onChange={(e) => setEditForm({ ...editForm, originalPrice: e.target.value })}
+            aria-label={lang === "ar" ? "السعر قبل الخصم" : "Original Price"}
+            className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-brand-neutral-200 text-xs font-mono text-brand-neutral-900 placeholder:text-brand-neutral-400 outline-none focus:border-primary-500"
+          />
         </div>
 
         {/* Category */}
@@ -473,17 +475,18 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
         </div>
 
         {/* Link */}
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-sans font-bold text-brand-neutral-800">
-            {lang === "ar" ? "لينك المتجر الأصلي" : "Original Store Link"}
-          </label>
-          <input
-            type="url"
-            value={editForm.link}
-            onChange={(e) => setEditForm({ ...editForm, link: e.target.value })}
-            className="w-full px-3.5 py-2 rounded-xl bg-white border border-brand-neutral-200 text-xs font-sans text-brand-neutral-900 outline-none focus:border-primary-500"
-          />
-        </div>
+        <input
+          type="url"
+          placeholder={
+            lang === "ar"
+              ? "رابط القطعة في المتجر الأصلي (اختياري، https://...)"
+              : "Original Store Product Link (Optional, https://...)"
+          }
+          value={editForm.link}
+          onChange={(e) => setEditForm({ ...editForm, link: e.target.value })}
+          aria-label={lang === "ar" ? "رابط المتجر الأصلي" : "Original Store Link"}
+          className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-brand-neutral-200 text-xs font-sans text-brand-neutral-900 placeholder:text-brand-neutral-400 outline-none focus:border-primary-500"
+        />
       </form>
     </Modal>
   );

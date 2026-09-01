@@ -46,7 +46,7 @@ export const FloatingNavIsland: React.FC<FloatingNavIslandProps> = ({
   // Hide on product detail view or stacked admin child forms
   if (
     isProductDetail ||
-    pathname === "/admin/products/new" ||
+    pathname.startsWith("/admin/products/") ||
     pathname === "/admin/reels/new"
   ) {
     return null;

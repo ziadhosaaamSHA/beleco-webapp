@@ -20,6 +20,29 @@ import { Card } from "@/components/ui/Card/Card";
 
 const defaultSizes = ["XS", "S", "M", "L", "XL"];
 
+const COLOR_MAP: Record<string, string> = {
+  "أسود": "#111111",
+  "black": "#111111",
+  "أبيض": "#FFFFFF",
+  "white": "#FFFFFF",
+  "بيج": "#E8D8C8",
+  "beige": "#E8D8C8",
+  "كحلي": "#1E2A38",
+  "navy": "#1E2A38",
+  "زيتي": "#4A5D4E",
+  "olive": "#4A5D4E",
+  "أحمر": "#DC2626",
+  "red": "#DC2626",
+  "وردي": "#F472B6",
+  "pink": "#F472B6",
+  "بني": "#78350F",
+  "brown": "#78350F",
+  "رمادي": "#6B7280",
+  "grey": "#6B7280",
+  "ذهبي": "#D4AF37",
+  "gold": "#D4AF37",
+};
+
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -269,20 +292,29 @@ export default function ProductDetailPage() {
                   : product.color
                   ? [product.color]
                   : []
-                ).map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => setSelectedColor(color)}
-                    className={`px-3.5 h-10 rounded-xl text-xs font-sans font-bold border transition-all flex items-center gap-1.5 shrink-0 ${
-                      selectedColor === color
-                        ? "bg-brand-neutral-950 text-white border-brand-neutral-950 shadow-xs scale-102"
-                        : "bg-brand-neutral-50 text-brand-neutral-800 border-brand-neutral-200 hover:border-brand-neutral-400"
-                    }`}
-                  >
-                    <span className="w-2.5 h-2.5 rounded-full bg-primary-500 shrink-0" />
-                    <span>{color}</span>
-                  </button>
-                ))}
+                ).map((color) => {
+                  const swatch =
+                    COLOR_MAP[color.toLowerCase()] ||
+                    COLOR_MAP[color] ||
+                    "#D49B44";
+                  return (
+                    <button
+                      key={color}
+                      onClick={() => setSelectedColor(color)}
+                      className={`px-3.5 h-10 rounded-xl text-xs font-sans font-bold border transition-all flex items-center gap-2 shrink-0 ${
+                        selectedColor === color
+                          ? "bg-brand-neutral-950 text-white border-brand-neutral-950 shadow-xs scale-102"
+                          : "bg-brand-neutral-50 text-brand-neutral-800 border-brand-neutral-200 hover:border-brand-neutral-400"
+                      }`}
+                    >
+                      <span
+                        className="w-3 h-3 rounded-full border border-black/10 shrink-0"
+                        style={{ backgroundColor: swatch }}
+                      />
+                      <span>{color}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

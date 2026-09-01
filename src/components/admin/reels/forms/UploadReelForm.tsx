@@ -99,22 +99,30 @@ export const UploadReelForm: React.FC = () => {
           {lang === "ar" ? "تفاصيل فيديو الريلز الجديد" : "New Reel Video Details"}
         </Heading>
 
-        <form onSubmit={handleUploadReel} className="flex flex-col gap-3.5">
-          {/* Creator Name */}
+        <form id="admin-upload-reel-form" onSubmit={handleUploadReel} className="flex flex-col gap-3.5">
+          {/* Creator Handle/Name */}
           <Input
-            label={t("admin.reels.creator")}
-            placeholder="مثال: @sara_fashion"
+            placeholder={
+              lang === "ar"
+                ? "اسم صانعة المحتوى / الحساب (مثال: @sara_fashion)"
+                : "Creator Handle / Name (e.g. @sara_fashion)"
+            }
             value={reelForm.creator}
             onChange={(e) => setReelForm({ ...reelForm, creator: e.target.value })}
+            aria-label={t("admin.reels.creator")}
             required
           />
 
           {/* Caption */}
           <Input
-            label={t("admin.reels.caption")}
-            placeholder="مثال: فستان العيد الأنيق وصل بيليكو ✨"
+            placeholder={
+              lang === "ar"
+                ? "وصف الفيديو وكابشن العرض (مثال: فستان العيد الأنيق وصل بيليكو ✨)"
+                : "Reel caption & description (e.g. New Summer Dress arrived ✨)"
+            }
             value={reelForm.caption}
             onChange={(e) => setReelForm({ ...reelForm, caption: e.target.value })}
+            aria-label={t("admin.reels.caption")}
             required
           />
 
@@ -172,30 +180,32 @@ export const UploadReelForm: React.FC = () => {
             </div>
           )}
 
-          {/* Sticky Bottom Actions */}
-          <div className="grid grid-cols-2 gap-2 sticky bottom-0 z-20 bg-white/95 p-2 border-t">
-            <Button
-              type="button"
-              variant="secondary"
-              size="md" 
-              onClick={() => router.push("/admin/reels")}
-              className="w-full font-bold justify-center rounded-xl bg-brand-neutral-100"
-            >
-              {lang === "ar" ? "إلغاء والعودة" : "Cancel"}
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              size="md"
-              isLoading={isUploadingReel}
-              leftIcon={<Upload className="w-4 h-4" />}
-              className="w-full font-bold shadow-md justify-center rounded-xl"
-            >
-              {t("admin.reels.publishReel")}
-            </Button>
-          </div>
         </form>
       </Card>
+
+      {/* Sticky Bottom Actions Bar */}
+      <div className="sticky bottom-0 z-20 bg-white/95 backdrop-blur-md p-3 border-t border-brand-neutral-200/90 flex items-center justify-between gap-2 max-w-[480px] mx-auto w-full -mx-4 px-4">
+        <Button
+          type="button"
+          variant="secondary"
+          size="md" 
+          onClick={() => router.push("/admin/reels")}
+          className="flex-1 font-bold justify-center rounded-xl bg-brand-neutral-100"
+        >
+          {lang === "ar" ? "إلغاء والعودة" : "Cancel"}
+        </Button>
+        <Button
+          type="submit"
+          form="admin-upload-reel-form"
+          variant="primary"
+          size="md"
+          isLoading={isUploadingReel}
+          leftIcon={<Upload className="w-4 h-4" />}
+          className="flex-1 font-bold shadow-xs justify-center rounded-xl"
+        >
+          {t("admin.reels.publishReel")}
+        </Button>
+      </div>
     </div>
   );
 };

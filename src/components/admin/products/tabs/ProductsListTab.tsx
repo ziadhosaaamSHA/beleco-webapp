@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Plus, Package, Sparkles } from "lucide-react";
+import { Plus, Package } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/context/ToastContext";
 import { useConfirm } from "@/context/ConfirmContext";
@@ -11,8 +11,6 @@ import { Product } from "@/types/product.types";
 import { Button } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { ProductCard } from "../components/ProductCard";
-import { ProductDetailsModal } from "../modals/ProductDetailsModal";
-import { ProductEditModal } from "../modals/ProductEditModal";
 
 export interface ProductsListTabProps {
   products: Product[];
@@ -22,7 +20,6 @@ export interface ProductsListTabProps {
 
 export const ProductsListTab: React.FC<ProductsListTabProps> = ({
   products,
-  onProductUpdated,
   onProductDeleted,
 }) => {
   const { t, lang } = useLanguage();
@@ -30,8 +27,6 @@ export const ProductsListTab: React.FC<ProductsListTabProps> = ({
   const { confirm } = useConfirm();
 
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedProductForDetails, setSelectedProductForDetails] = useState<Product | null>(null);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const categories = [
     { id: "all", label: lang === "ar" ? "الكل" : "All" },
@@ -118,8 +113,6 @@ export const ProductsListTab: React.FC<ProductsListTabProps> = ({
               <ProductCard
                 key={prod.id}
                 product={prod}
-                onView={(p) => setSelectedProductForDetails(p)}
-                onEdit={(p) => setEditingProduct(p)}
                 onDelete={handleDeleteProduct}
               />
             ))}
@@ -138,31 +131,6 @@ export const ProductsListTab: React.FC<ProductsListTabProps> = ({
           />
         )}
       </div>
-
-      {/* Product Details Modal */}
-      <ProductDetailsModal
-        product={selectedProductForDetails}
-        isOpen={!!selectedProductForDetails}
-        onClose={() => setSelectedProductForDetails(null)}
-        onEdit={(prod) => {
-          setSelectedProductForDetails(null);
-          setEditingProduct(prod);
-        }}
-        onDelete={handleDeleteProduct}
-      />
-
-      {/* Product Edit Modal */}
-      <ProductEditModal
-        product={editingProduct}
-        isOpen={!!editingProduct}
-        onClose={() => setEditingProduct(null)}
-        onSuccess={(updated) => {
-          onProductUpdated?.(updated);
-          if (selectedProductForDetails?.id === updated.id) {
-            setSelectedProductForDetails(updated);
-          }
-        }}
-      />
     </div>
   );
 };

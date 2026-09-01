@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Package, Eye, Edit3, Trash2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product } from "@/types/product.types";
@@ -10,8 +11,8 @@ import { Heading } from "@/components/ui/Heading/Heading";
 
 export interface ProductCardProps {
   product: Product;
-  onView: (product: Product) => void;
-  onEdit: (product: Product) => void;
+  onView?: (product: Product) => void;
+  onEdit?: (product: Product) => void;
   onDelete: (product: Product) => void;
 }
 
@@ -24,8 +25,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const { t, lang } = useLanguage();
 
   return (
-    <Card className="p-3.5 flex flex-col justify-between bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs text-left group" dir="ltr">
-      <div className="flex gap-3">
+    <Card className="p-3.5 flex flex-col justify-between bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs text-left group hover:border-brand-neutral-300 transition-all" dir="ltr">
+      <Link href={`/admin/products/${product.id}`} className="flex gap-3 cursor-pointer">
         {/* Product Image */}
         <div className="relative w-20 h-24 rounded-xl overflow-hidden bg-brand-neutral-100 border border-brand-neutral-200 shrink-0">
           {product.imageUrl ? (
@@ -80,26 +81,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
         </div>
-      </div>
+      </Link>
 
       {/* 3-Button Actions Bar */}
       <div className="grid grid-cols-3 gap-1 mt-2.5 pt-2 border-t border-brand-neutral-100" onClick={(e) => e.stopPropagation()}>
-        <button
-          type="button"
-          onClick={() => onView(product)}
+        <Link
+          href={`/admin/products/${product.id}`}
+          onClick={() => onView?.(product)}
           className="py-1.5 px-1.5 rounded-xl text-brand-neutral-800 bg-brand-neutral-100 hover:bg-brand-neutral-200 active:scale-98 transition-all text-[11px] font-sans font-bold flex items-center justify-center gap-1 border border-brand-neutral-200 cursor-pointer"
         >
           <Eye className="w-3 h-3" />
           <span>{lang === "ar" ? "عرض" : "View"}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => onEdit(product)}
+        </Link>
+
+        <Link
+          href={`/admin/products/${product.id}/edit`}
+          onClick={() => onEdit?.(product)}
           className="py-1.5 px-1.5 rounded-xl text-primary-700 bg-primary-50 hover:bg-primary-100 active:scale-98 transition-all text-[11px] font-sans font-bold flex items-center justify-center gap-1 border border-primary-200 cursor-pointer"
         >
           <Edit3 className="w-3 h-3" />
           <span>{lang === "ar" ? "تعديل" : "Edit"}</span>
-        </button>
+        </Link>
+
         <button
           type="button"
           onClick={() => onDelete(product)}

@@ -118,3 +118,24 @@ body {
 .animate-backdrop {
   animation: backdropFade 0.2s ease-out forwards;
 }
+
+/* ---------------- Skeleton Wave Shimmer Animation ---------------- */
+@keyframes skeletonShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-neutral) 8%, white) 0%,
+    color-mix(in srgb, var(--color-neutral) 16%, white) 50%,
+    color-mix(in srgb, var(--color-neutral) 8%, white) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

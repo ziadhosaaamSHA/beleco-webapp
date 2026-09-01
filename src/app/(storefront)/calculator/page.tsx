@@ -88,32 +88,28 @@ export default function PriceCalculatorPage() {
         </div>
 
         {/* Product Link Input */}
-        <Card className="p-4 flex flex-col gap-3 bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs">
-          <div className="flex items-center gap-2 text-brand-neutral-950">
-            <LinkIcon className="w-4 h-4 text-primary-500" />
-            <Heading variant="card-title" className="text-xs sm:text-sm font-bold">
-              {lang === "ar" ? "رابط المنتج (اختياري)" : "Product Link (Optional)"}
-            </Heading>
-          </div>
+        <Card className="p-3.5 flex flex-col gap-2 bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs">
           <Input
-            placeholder={lang === "ar" ? "انسخي رابط المنتج من Shein أو Trendyol هنا..." : "Paste Shein or Trendyol product URL here..."}
+            leftIcon={<LinkIcon className="w-4 h-4 text-primary-500" />}
+            placeholder={
+              lang === "ar"
+                ? "الصقي رابط المنتج هنا من Shein أو Trendyol أو Zara (اختياري)..."
+                : "Paste Shein, Trendyol, or Zara product URL here (Optional)..."
+            }
             value={productUrl}
             onChange={(e) => setProductUrl(e.target.value)}
-            className="bg-brand-neutral-50"
+            aria-label={lang === "ar" ? "رابط المنتج" : "Product Link"}
           />
         </Card>
 
         {/* Calculation Inputs */}
-        <Card className="p-4 flex flex-col gap-4 bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs">
+        <Card className="p-4 flex flex-col gap-3.5 bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs">
           <Heading variant="card-title" className="text-xs sm:text-sm font-bold text-brand-neutral-950">
-            {lang === "ar" ? "بيانات السعر" : "Price Details"}
+            {lang === "ar" ? "بيانات السعر والعملة" : "Price & Currency Details"}
           </Heading>
 
           {/* Currency Selector */}
-          <div className="flex flex-col gap-1.5 text-left">
-            <label className="text-xs font-sans font-bold text-brand-neutral-700">
-              {lang === "ar" ? "العملة الأصلية للموقع" : "Source Currency"}
-            </label>
+          <div className="flex flex-col gap-1 text-left">
             <div className="grid grid-cols-2 gap-2">
               {(Object.keys(currencyRates) as Currency[]).map((curr) => {
                 const isSelected = currency === curr;
@@ -138,23 +134,33 @@ export default function PriceCalculatorPage() {
             </div>
           </div>
 
-          {/* Original Price Input */}
+          {/* Original Price Input with Currency Suffix */}
           <Input
-            label={`${lang === "ar" ? "السعر بـ" : "Price in"} (${currency})`}
             type="number"
-            placeholder="120"
+            placeholder={
+              lang === "ar"
+                ? `سعر القطعة بالعملة الأصلية (${currency})`
+                : `Item Price in (${currency})`
+            }
             value={originalPrice}
             onChange={(e) => setOriginalPrice(e.target.value)}
+            suffix={currency}
+            aria-label={`${lang === "ar" ? "السعر بـ" : "Price in"} ${currency}`}
             className="font-mono text-base"
           />
 
-          {/* Discount Input */}
+          {/* Discount Input with Currency Suffix */}
           <Input
-            label={lang === "ar" ? "كوبون خصم / تخفيض (بالجنيه، اختياري)" : "Discount Coupon (in EGP, optional)"}
             type="number"
-            placeholder="0"
+            placeholder={
+              lang === "ar"
+                ? "قيمة كود الخصم أو التخفيض (اختياري، بالجنيه)"
+                : "Discount Coupon Value (Optional, in EGP)"
+            }
             value={customDiscount}
             onChange={(e) => setCustomDiscount(e.target.value)}
+            suffix={t("currency.egp")}
+            aria-label={lang === "ar" ? "كوبون خصم" : "Discount Coupon"}
             className="font-mono text-base"
           />
         </Card>

@@ -343,52 +343,52 @@ export default function MyAddressesPage() {
             </button>
 
             <Input
-              label={lang === "ar" ? "الاسم المستلم" : "Recipient Name"}
-              placeholder="مثال: سارة أحمد"
+              placeholder={lang === "ar" ? "اسم المستلم (مثال: سارة أحمد)" : "Recipient Name (e.g. Sarah Ahmed)"}
               value={name}
               onChange={(e) => setName(e.target.value)}
+              aria-label={lang === "ar" ? "اسم المستلم" : "Recipient Name"}
               required
             />
 
             <Input
-              label={lang === "ar" ? "رقم الهاتف" : "Phone Number"}
               type="tel"
-              placeholder="01012345678"
+              placeholder={lang === "ar" ? "رقم الهاتف للتواصل (مثال: 01012345678)" : "Phone Number (e.g. 01012345678)"}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              aria-label={lang === "ar" ? "رقم الهاتف" : "Phone Number"}
               required
             />
 
             <div className="grid grid-cols-2 gap-2">
               <Input
-                label={lang === "ar" ? "المحافظة" : "Governorate"}
-                placeholder="القاهرة"
+                placeholder={lang === "ar" ? "المحافظة (مثال: القاهرة)" : "Governorate (e.g. Cairo)"}
                 value={governorate}
                 onChange={(e) => setGovernorate(e.target.value)}
+                aria-label={lang === "ar" ? "المحافظة" : "Governorate"}
                 required
               />
               <Input
-                label={lang === "ar" ? "المدينة / المنطقة" : "City / Area"}
-                placeholder="التجمع الخامس"
+                placeholder={lang === "ar" ? "المدينة / الحي (مثال: التجمع)" : "City / District (e.g. New Cairo)"}
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
+                aria-label={lang === "ar" ? "المدينة / المنطقة" : "City / Area"}
                 required
               />
             </div>
 
             <Input
-              label={lang === "ar" ? "العنوان بالتفصيل" : "Street Address"}
-              placeholder="شارع التسعين الشمالي، عمارة 45"
+              placeholder={lang === "ar" ? "العنوان بالتفصيل (الشارع، المعلم القريب)" : "Street Address & Landmark"}
               value={streetAddress}
               onChange={(e) => setStreetAddress(e.target.value)}
+              aria-label={lang === "ar" ? "العنوان بالتفصيل" : "Street Address"}
               required
             />
 
             <Input
-              label={lang === "ar" ? "العمارة / رقم الشقة (اختياري)" : "Building / Apt (Optional)"}
-              placeholder="شقة 4، الدور الثاني"
+              placeholder={lang === "ar" ? "رقم العمارة / الشقة / الطابق (اختياري)" : "Building / Apt / Floor (Optional)"}
               value={building}
               onChange={(e) => setBuilding(e.target.value)}
+              aria-label={lang === "ar" ? "رقم العمارة / الشقة" : "Building / Apartment"}
             />
 
             <label className="flex items-center gap-2 cursor-pointer pt-1 text-xs font-sans text-brand-neutral-800">

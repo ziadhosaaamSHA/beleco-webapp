@@ -462,10 +462,14 @@ export default function CartPage() {
               {/* Order Notes Field */}
               <div className="pt-2">
                 <Input
-                  label={t("cart.notes")}
-                  placeholder="أي تفاصيل خاصة بتوقيت الاستلام أو المقاسات..."
+                  placeholder={
+                    lang === "ar"
+                      ? "ملاحظات التوصيل أو توقيت الاستلام والمقاس (اختياري)..."
+                      : "Delivery notes or preferred delivery time (Optional)..."
+                  }
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
+                  aria-label={t("cart.notes")}
                 />
               </div>
 
@@ -506,56 +510,80 @@ export default function CartPage() {
               </button>
 
               <Input
-                label={t("cart.name")}
-                placeholder="مثال: ياسمين محمود"
+                placeholder={
+                  lang === "ar"
+                    ? "الاسم بالكامل (مثال: ياسمين محمود)"
+                    : "Full Name (e.g. Yasmin Mahmoud)"
+                }
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
+                aria-label={t("cart.name")}
                 required
               />
 
               <Input
-                label={t("cart.phone")}
                 type="tel"
-                placeholder="مثال: 01012345678"
+                placeholder={
+                  lang === "ar"
+                    ? "رقم الهاتف للتواصل وتأكيد الطلب (مثال: 01012345678)"
+                    : "Phone Number for delivery (e.g. 01012345678)"
+                }
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
+                aria-label={t("cart.phone")}
                 required
               />
 
               <div className="grid grid-cols-2 gap-2">
                 <Input
-                  label={t("cart.gov")}
-                  placeholder="القاهرة / دبي / الرياض"
+                  placeholder={
+                    lang === "ar"
+                      ? "المحافظة (مثال: القاهرة / الجيزة)"
+                      : "Governorate / State (e.g. Cairo / Giza)"
+                  }
                   value={governorate}
                   onChange={(e) => setGovernorate(e.target.value)}
+                  aria-label={t("cart.gov")}
                   required
                 />
                 <Input
-                  label={t("cart.city")}
-                  placeholder="التجمع / المعادي"
+                  placeholder={
+                    lang === "ar"
+                      ? "المدينة / الحي (مثال: التجمع / المعادي)"
+                      : "City / District (e.g. New Cairo / Maadi)"
+                  }
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
+                  aria-label={t("cart.city")}
                   required
                 />
               </div>
 
               <Input
-                label={t("cart.address")}
-                placeholder="الشارع، اسم المنطقة أو المعلم القريب"
+                placeholder={
+                  lang === "ar"
+                    ? "العنوان بالتفصيل (اسم الشارع، رقم العمارة، أقرب معلم)"
+                    : "Detailed Address (Street, Building, Landmark)"
+                }
                 value={streetAddress}
                 onChange={(e) => setStreetAddress(e.target.value)}
+                aria-label={t("cart.address")}
                 required
               />
 
               <Input
-                label={lang === "ar" ? "رقم العمارة / الشقة (اختياري)" : "Building / Apartment (Optional)"}
-                placeholder="مثال: عمارة 12، شقة 4"
+                placeholder={
+                  lang === "ar"
+                    ? "رقم العمارة / الشقة / الطابق (اختياري)"
+                    : "Building / Apartment / Floor (Optional)"
+                }
                 value={building}
                 onChange={(e) => setBuilding(e.target.value)}
+                aria-label={lang === "ar" ? "رقم العمارة / الشقة" : "Building / Apartment"}
               />
 
               {/* Save Address For Future Orders Checkbox */}
-              <label className="flex items-center gap-2 p-2.5 rounded-xl bg-brand-neutral-50 border border-brand-neutral-200 cursor-pointer">
+              <label className="flex items-center gap-2 p-2.5 rounded-xl bg-brand-neutral-50/70 border border-brand-neutral-200/90 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={saveForLater}
@@ -568,10 +596,14 @@ export default function CartPage() {
               </label>
 
               <Input
-                label={t("cart.notes")}
-                placeholder="أي تفاصيل خاصة بتوقيت الاستلام أو المقاسات..."
+                placeholder={
+                  lang === "ar"
+                    ? "ملاحظات التوصيل أو توقيت الاستلام والمقاسات (اختياري)..."
+                    : "Delivery notes or preferred delivery time (Optional)..."
+                }
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
+                aria-label={t("cart.notes")}
               />
 
               <Button

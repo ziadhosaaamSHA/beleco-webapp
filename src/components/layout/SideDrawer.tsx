@@ -187,6 +187,19 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ isOpen, onClose }) => {
 
           <div className="drawer-divider h-px bg-brand-neutral-200 my-1 mx-2" />
 
+          {/* Settings -> Opens Account */}
+          <Link
+            href="/account"
+            onClick={onClose}
+            className="drawer-item flex items-center gap-3 w-full p-3 rounded-xl text-brand-neutral-900 hover:bg-brand-neutral-100 active:bg-primary-50 transition-colors text-sm font-sans font-bold"
+          >
+            <svg className="w-5 h-5 stroke-primary-500 fill-none stroke-[1.7] shrink-0" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span>{t("account.settings")}</span>
+          </Link>
+
           {/* Language Switch Row */}
           <button
             onClick={() => {
@@ -200,7 +213,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ isOpen, onClose }) => {
                 <circle cx="12" cy="12" r="9" />
                 <path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z" />
               </svg>
-              <span>{t("account.settings")}</span>
+              <span>{lang === "ar" ? "اللغة / Language" : "Language / اللغة"}</span>
             </div>
             <span className="text-xs font-mono font-bold text-primary-600 px-2 py-0.5 rounded bg-primary-50">
               {lang.toUpperCase()}

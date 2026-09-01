@@ -266,10 +266,15 @@ export const AddProductForm: React.FC = () => {
         <div className="flex items-center gap-2">
           <input
             type="url"
-            placeholder={lang === "ar" ? "https://ar.shein.com/product-..." : "https://www.zara.com/..."}
+            placeholder={
+              lang === "ar"
+                ? "الصقي رابط المنتج هنا (شي إن، زارا، ترينديول...)"
+                : "Paste product URL here (Shein, Zara, Trendyol...)"
+            }
             value={extractUrl}
             onChange={(e) => setExtractUrl(e.target.value)}
-            className="flex-1 px-3.5 py-2.5 rounded-xl bg-brand-neutral-50 border border-brand-neutral-200 text-xs font-sans text-brand-neutral-900 outline-none focus:border-primary-500"
+            className="flex-1 px-3.5 py-2.5 rounded-xl bg-brand-neutral-50/80 border border-brand-neutral-200 text-xs font-sans text-brand-neutral-900 outline-none focus:border-primary-500"
+            aria-label={lang === "ar" ? "رابط الاستخراج التلقائي" : "Auto-extract URL"}
           />
           <Button
             type="button"
@@ -302,12 +307,9 @@ export const AddProductForm: React.FC = () => {
           {lang === "ar" ? "بيانات المنتج وتفاصيل العرض" : "Product Details & Display Settings"}
         </Heading>
 
-        <form onSubmit={handleSaveProduct} className="flex flex-col gap-4">
+        <form id="admin-add-product-form" onSubmit={handleSaveProduct} className="flex flex-col gap-3.5">
           {/* Image Picker */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-sans font-bold text-brand-neutral-800">
-              {lang === "ar" ? "صورة المنتج" : "Product Image"}
-            </label>
             <div
               onClick={() => productImageInputRef.current?.click()}
               className="border-2 border-dashed border-brand-neutral-300 hover:border-primary-400 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 bg-brand-neutral-50/70 hover:bg-brand-neutral-100/70 transition-colors cursor-pointer text-center"
@@ -347,29 +349,43 @@ export const AddProductForm: React.FC = () => {
 
           {/* Product Name */}
           <Input
-            label={t("admin.products.name")}
-            placeholder={lang === "ar" ? "مثال: فستان سهرة شيفون مطرز" : "e.g. Elegant Chiffon Dress"}
+            placeholder={
+              lang === "ar"
+                ? "اسم المنتج وتفاصيل القطعة (مثال: فستان سهرة شيفون مطرز)"
+                : "Product Name & Details (e.g. Elegant Chiffon Dress)"
+            }
             value={productForm.name}
             onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+            aria-label={t("admin.products.name")}
             required
           />
 
           {/* Prices */}
           <div className="grid grid-cols-2 gap-2">
             <Input
-              label={t("admin.products.price")}
               type="number"
-              placeholder="650"
+              placeholder={
+                lang === "ar"
+                  ? "سعر البيع بالجنيه (مثال: 650)"
+                  : "Selling Price in EGP (e.g. 650)"
+              }
               value={productForm.price}
               onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+              suffix={t("currency.egp")}
+              aria-label={t("admin.products.price")}
               required
             />
             <Input
-              label={lang === "ar" ? "السعر قبل الخصم (اختياري)" : "Original Price"}
               type="number"
-              placeholder="850"
+              placeholder={
+                lang === "ar"
+                  ? "السعر قبل الخصم (اختياري، 850)"
+                  : "Original Price (Optional, 850)"
+              }
               value={productForm.originalPrice}
               onChange={(e) => setProductForm({ ...productForm, originalPrice: e.target.value })}
+              suffix={t("currency.egp")}
+              aria-label={lang === "ar" ? "السعر قبل الخصم" : "Original Price"}
             />
           </div>
 
@@ -581,36 +597,42 @@ export const AddProductForm: React.FC = () => {
 
           {/* Original Store Link */}
           <Input
-            label={lang === "ar" ? "لينك المتجر الأصلي (اختياري)" : "Original Store Link"}
-            placeholder="https://..."
+            placeholder={
+              lang === "ar"
+                ? "رابط القطعة في المتجر الأصلي (اختياري، https://...)"
+                : "Original Store Product Link (Optional, https://...)"
+            }
             value={productForm.link}
             onChange={(e) => setProductForm({ ...productForm, link: e.target.value })}
+            aria-label={lang === "ar" ? "رابط المتجر الأصلي" : "Original Store Link"}
           />
 
-          {/* Sticky Bottom Actions */}
-          <div className="grid grid-cols-2 gap-2 border-brand-neutral-100 sticky top-0 bottom-0 z-20 bg-white/95 p-2 border-t">
-            <Button
-              type="button"
-              variant="secondary"
-              size="md"
-              onClick={() => router.push("/admin/products")}
-              className="w-full font-bold justify-center rounded-xl bg-brand-neutral-100"
-            >
-              {lang === "ar" ? "إلغاء والعودة" : "Cancel"}
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              size="md"
-              isLoading={isSavingProduct}
-              leftIcon={<Upload className="w-4 h-4" />}
-              className="w-full font-bold shadow-md justify-center rounded-xl"
-            >
-              {lang === "ar" ? "نشر المنتج بالمتجر" : "Publish Product"}
-            </Button>
-          </div>
         </form>
       </Card>
+
+      {/* Sticky Bottom Actions Bar */}
+      <div className="sticky bottom-0 z-20 bg-white/95 backdrop-blur-md p-3 border-t border-brand-neutral-200/90 flex items-center justify-between gap-2 max-w-[480px] mx-auto w-full -mx-4 px-4">
+        <Button
+          type="button"
+          variant="secondary"
+          size="md"
+          onClick={() => router.push("/admin/products")}
+          className="flex-1 font-bold justify-center rounded-xl bg-brand-neutral-100"
+        >
+          {lang === "ar" ? "إلغاء والعودة" : "Cancel"}
+        </Button>
+        <Button
+          type="submit"
+          form="admin-add-product-form"
+          variant="primary"
+          size="md"
+          isLoading={isSavingProduct}
+          leftIcon={<Upload className="w-4 h-4" />}
+          className="flex-1 font-bold shadow-xs justify-center rounded-xl"
+        >
+          {lang === "ar" ? "نشر المنتج بالمتجر" : "Publish Product"}
+        </Button>
+      </div>
     </div>
   );
 };

@@ -69,7 +69,7 @@ export const productsService = {
     callback?: (products: Product[]) => void,
     onError?: (err: Error) => void
   ) {
-    let q = query(collection(db, PRODUCTS_COL), orderBy("createdAt", "desc"));
+    const q = query(collection(db, PRODUCTS_COL), orderBy("createdAt", "desc"));
 
     return onSnapshot(
       q,
@@ -106,19 +106,11 @@ export const productsService = {
         callback?.(items);
       },
       (err) => {
-        // Fallback in case of index issues
-        const fallbackQ = query(collection(db, PRODUCTS_COL));
-        return onSnapshot(
-          fallbackQ,
-          (snap) => {
-            let items = snap.docs.map((d) => ({
-              id: d.id,
-              ...d.data(),
-            })) as Product[];
-            callback?.(items);
-          },
-          onError
-        );
+        if (onError) {
+          onError(err);
+        } else {
+          console.warn("Products subscription error:", err.message);
+        }
       }
     );
   },

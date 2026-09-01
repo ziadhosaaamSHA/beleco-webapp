@@ -10,7 +10,7 @@ export const Skeleton: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   return (
     <div
       className={cn(
-        "animate-pulse bg-brand-neutral-200/80 rounded-xl",
+        "skeleton-shimmer rounded-xl select-none pointer-events-none",
         className
       )}
       {...props}

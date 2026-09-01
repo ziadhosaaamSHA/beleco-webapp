@@ -68,8 +68,9 @@ export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({
 
   // Derive default localized page title if not explicitly passed
   const getResolvedTitle = (): string => {
-    if (title) return title;
     if (pathname === "/admin/products/new") return lang === "ar" ? "إضافة منتج جديد" : "Add New Product";
+    if (pathname.endsWith("/edit") && pathname.startsWith("/admin/products/")) return lang === "ar" ? "تعديل بيانات المنتج" : "Edit Product Details";
+    if (pathname.startsWith("/admin/products/")) return lang === "ar" ? "تفاصيل المنتج" : "Product Details";
     if (pathname === "/admin/reels/new") return lang === "ar" ? "نشر فيديو ريل جديد" : "Upload New Reel";
     if (pathname === "/admin/orders") return lang === "ar" ? "إدارة الطلبات" : "Orders Management";
     if (pathname === "/admin/products") return lang === "ar" ? "كتالوج المنتجات" : "Products Catalog";

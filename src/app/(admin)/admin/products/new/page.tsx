@@ -47,14 +47,16 @@ export default function AddNewProductPage() {
   }
 
   return (
-    <StandardPageLayout
-      title={lang === "ar" ? "إضافة منتج جديد" : "Add New Product"}
-      backHref="/admin/products"
-      enableNavOffset={false}
-    >
-      <div className="flex flex-col gap-4 px-4 pt-1 text-left" dir="ltr">
-        <AddProductForm />
-      </div>
-    </StandardPageLayout>
+    <div className="relative h-full w-full flex flex-col overflow-hidden">
+      <StandardPageLayout
+        title={lang === "ar" ? "إضافة منتج جديد" : "Add New Product"}
+        backHref="/admin/products"
+        enableNavOffset={false}
+      >
+        <div className="flex flex-col gap-4 px-4 pt-1 pb-24 text-left" dir="ltr">
+          <AddProductForm />
+        </div>
+      </StandardPageLayout>
+    </div>
   );
 }
