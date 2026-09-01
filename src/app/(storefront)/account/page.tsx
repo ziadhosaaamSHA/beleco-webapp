@@ -170,20 +170,6 @@ export default function AccountPage() {
               </span>
             </Card>
           </Link>
-
-          <button onClick={openLocationModal} className="w-full text-left">
-            <Card className="p-3 flex flex-col items-center justify-center text-center bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs hover:border-primary-500 transition-colors">
-              <div className="w-5.5 h-4 rounded overflow-hidden border border-brand-neutral-200 shadow-2xs mb-1 flex items-center justify-center">
-                {countryInfo.flag && <countryInfo.flag className="w-full h-full object-cover" />}
-              </div>
-              <span className="font-mono font-extrabold text-xs text-brand-neutral-950">
-                {countryInfo.currencySymbol}
-              </span>
-              <span className="text-[10px] font-sans text-brand-neutral-500 mt-0.5 truncate max-w-full">
-                {t(countryInfo.nameKey)}
-              </span>
-            </Card>
-          </button>
         </div>
 
         {/* LEGACY APP GROUP 1: PERSONAL & ORDERS NAVIGATION (Listed directly as rows) */}

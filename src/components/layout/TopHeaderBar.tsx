@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { Globe, Store, Shield } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { useLocation } from "@/context/LocationContext";
 import { useToast } from "@/context/ToastContext";
 
 export interface TopHeaderBarProps {
@@ -17,7 +16,6 @@ export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({ onOpenMenu }) => {
   const pathname = usePathname();
   const { isAdmin } = useAuth();
   const { lang, toggleLanguage, t } = useLanguage();
-  const { countryInfo, openModal: openLocationModal } = useLocation();
   const { showToast } = useToast();
   const isOnAdmin = pathname.startsWith("/admin");
 
@@ -30,38 +28,35 @@ export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({ onOpenMenu }) => {
       dir="ltr"
     >
       <header className="beleco-floating-topbar pointer-events-auto w-full bg-white/95 backdrop-blur-md border border-brand-neutral-200/90 rounded-full px-3.5 py-2 flex items-center justify-between gap-2 shadow-sm">
-        {/* Left side: Back to Store on Admin, Location Selector on Storefront */}
+        {/* Left side: Back to Store on Admin, Beleco Logo on Storefront */}
         {isOnAdmin ? (
           <Link
             href="/"
-            className="flex items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer text-brand-neutral-950 max-w-[150px] shrink-1 min-w-0 group text-left"
+            className="flex items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer text-brand-neutral-950 shrink-0 group text-left"
             title={t("admin.backToStore")}
           >
-            <div className="w-5 h-5 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
-              <Store className="w-3 h-3 stroke-[2.2]" />
+            <div className="w-6 h-6 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
+              <Store className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
-            <span className="text-xs font-sans font-bold whitespace-nowrap overflow-hidden text-ellipsis min-w-0 text-brand-neutral-900 group-hover:text-primary-600">
+            <span className="text-xs font-sans font-bold whitespace-nowrap text-brand-neutral-900 group-hover:text-primary-600">
               {t("admin.backToStore")}
             </span>
           </Link>
         ) : (
-          <button
-            onClick={openLocationModal}
-            className="location-selector flex items-center gap-2 bg-transparent border-none p-0 cursor-pointer text-brand-neutral-950 max-w-[140px] shrink-1 min-w-0 group text-left"
+          <Link
+            href="/"
+            className="flex items-center gap-2 bg-transparent border-none p-0 cursor-pointer group shrink-0"
+            title="Beleco"
           >
-            <div className="w-5.5 h-4 rounded overflow-hidden border border-brand-neutral-200 shadow-2xs shrink-0 flex items-center justify-center">
-              {countryInfo.flag && <countryInfo.flag className="w-full h-full object-cover" />}
-            </div>
-            <span suppressHydrationWarning className="text-xs font-sans font-extrabold whitespace-nowrap overflow-hidden text-ellipsis min-w-0 text-brand-neutral-900 group-hover:text-primary-600">
-              {t(countryInfo.nameKey)}
+            <img
+              src="/logo.png"
+              alt="Beleco Logo"
+              className="h-6 w-auto object-contain shrink-0 drop-shadow-2xs transition-transform group-hover:scale-105"
+            />
+            <span className="font-editorial text-base font-extrabold text-brand-neutral-950 tracking-tight group-hover:text-primary-600 transition-colors">
+              Beleco
             </span>
-            <svg
-              className="w-3.5 h-3.5 stroke-brand-neutral-400 fill-none stroke-[2] shrink-0"
-              viewBox="0 0 24 24"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </button>
+          </Link>
         )}
 
         {/* Right side: Topbar Actions */}

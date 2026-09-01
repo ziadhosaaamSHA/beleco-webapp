@@ -98,15 +98,9 @@ function getOrderStatusBadgeVariant(status: OrderStatus): "primary" | "neutral" 
 export default function AdminDashboardPage() {
   const { isAdmin, loading: authLoading } = useAuth();
   const { t, lang } = useLanguage();
-  const { rates, updateRates, formatPrice } = useLocation();
+  const { formatPrice } = useLocation();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
-
-  // Currency Rates Modal state
-  const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
-  const [saRateInput, setSaRateInput] = useState(String(rates.sa || 13.2));
-  const [aeRateInput, setAeRateInput] = useState(String(rates.ae || 13.5));
-  const [usdRateInput, setUsdRateInput] = useState(String(rates.usd || 49.5));
 
   // Navigation state (Driven by floating bottom nav island)
   const [activeTab, setActiveTab] = useState<AdminTab>("bazaar");
@@ -722,18 +716,6 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-brand-neutral-500 font-sans mt-0.5">
                 {t("admin.subtitle")}
               </p>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => setIsCurrencyModalOpen(true)}
-                leftIcon={<Coins className="w-4 h-4 text-primary-500" />}
-                className="rounded-xl font-bold text-xs"
-              >
-                {t("admin.rates.title")}
-              </Button>
             </div>
           </div>
 
@@ -1535,98 +1517,6 @@ export default function AdminDashboardPage() {
         productsCount={storefrontProducts.length}
         reelsCount={reelsList.length}
       />
-
-      {/* Currency Exchange Rates Settings Modal */}
-      {isCurrencyModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-brand-neutral-950/60 backdrop-blur-xs p-4 animate-in fade-in duration-200"
-          onClick={() => setIsCurrencyModalOpen(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-white rounded-3xl p-6 border border-brand-neutral-200 shadow-2xl flex flex-col gap-4 animate-sheet-up text-left"
-            dir="ltr"
-          >
-            <div className="flex items-center justify-between border-b border-brand-neutral-100 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center">
-                  <Coins className="w-4 h-4" />
-                </div>
-                <Heading variant="card-title" className="text-base font-bold text-brand-neutral-900">
-                  {t("admin.rates.title")}
-                </Heading>
-              </div>
-              <button
-                onClick={() => setIsCurrencyModalOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-brand-neutral-400 hover:text-brand-neutral-700 hover:bg-brand-neutral-100"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <p className="text-xs font-sans text-brand-neutral-500">
-              {t("admin.rates.sub")}
-            </p>
-
-            <div className="flex flex-col gap-3">
-              <Input
-                label="سعر الريال السعودي مقابل الجنيه (1 SAR = X EGP)"
-                type="number"
-                step="0.01"
-                value={saRateInput}
-                onChange={(e) => setSaRateInput(e.target.value)}
-              />
-              <Input
-                label="سعر الدرهم الإماراتي مقابل الجنيه (1 AED = X EGP)"
-                type="number"
-                step="0.01"
-                value={aeRateInput}
-                onChange={(e) => setAeRateInput(e.target.value)}
-              />
-              <Input
-                label="سعر الدولار الأمريكي مقابل الجنيه (1 USD = X EGP)"
-                type="number"
-                step="0.01"
-                value={usdRateInput}
-                onChange={(e) => setUsdRateInput(e.target.value)}
-              />
-            </div>
-
-            {/* Live Simulation Preview */}
-            <div className="p-3 rounded-2xl bg-brand-neutral-50 border border-brand-neutral-200 text-xs font-sans text-brand-neutral-700 flex flex-col gap-1.5">
-              <span className="font-bold text-brand-neutral-900">معاينة تحويل منتج بسعر 1,000 ج.م:</span>
-              <div className="flex items-center justify-between font-mono text-[11px]">
-                <span>السعودية (SAR):</span>
-                <span className="font-bold text-primary-600">
-                  {Math.round((1000 / (parseFloat(saRateInput) || 13.2)) * 10) / 10} ر.س
-                </span>
-              </div>
-              <div className="flex items-center justify-between font-mono text-[11px]">
-                <span>الإمارات (AED):</span>
-                <span className="font-bold text-primary-600">
-                  {Math.round((1000 / (parseFloat(aeRateInput) || 13.5)) * 10) / 10} د.إ
-                </span>
-              </div>
-            </div>
-
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => {
-                const sa = parseFloat(saRateInput) || 13.2;
-                const ae = parseFloat(aeRateInput) || 13.5;
-                const usd = parseFloat(usdRateInput) || 49.5;
-                updateRates({ sa, ae, usd });
-                showToast(t("admin.rates.saved"), "success");
-                setIsCurrencyModalOpen(false);
-              }}
-              leftIcon={<Check className="w-4 h-4" />}
-            >
-              {t("admin.rates.save")}
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
