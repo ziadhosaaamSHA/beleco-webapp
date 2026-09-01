@@ -53,9 +53,6 @@ export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({ onOpenMenu }) => {
               alt="Beleco Logo"
               className="h-6 w-auto object-contain shrink-0 drop-shadow-2xs transition-transform group-hover:scale-105"
             />
-            <span className="font-editorial text-base font-extrabold text-brand-neutral-950 tracking-tight group-hover:text-primary-600 transition-colors">
-              Beleco
-            </span>
           </Link>
         )}
 
