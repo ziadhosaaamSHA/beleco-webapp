@@ -1,0 +1,17 @@
+# Dependencies (regenerated via npm install — never commit these)
+node_modules/
+functions/node_modules/
+
+# Next.js build
+.next/
+out/
+
+# Firebase local files
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+ui-debug.log
+
+# OS files
+.DS_Store
+Thumbs.db

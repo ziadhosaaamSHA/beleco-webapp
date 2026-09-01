@@ -1,0 +1,15 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "bazaarSales",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "soldAt",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

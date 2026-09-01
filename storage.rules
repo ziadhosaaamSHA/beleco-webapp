@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in [
+        "belleco.eg@gmail.com",
+        "admin@beleco-admin.local",
+        "ziadhh2003@gmail.com"
+      ];
+    }
+
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /reels/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /bazaarProducts/{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

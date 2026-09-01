@@ -1,0 +1,71 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in [
+        "belleco.eg@gmail.com",
+        "admin@beleco-admin.local",
+        "ziadhh2003@gmail.com"
+      ];
+    }
+
+    // Orders:
+    // - Single-document reads (get) stay open, gated by knowledge of the
+    //   random orderId (capability token) — needed before the customer is
+    //   logged in, e.g. right after pasting her cart link.
+    // - Listing/querying the collection (list) is only allowed when the
+    //   query is scoped to the signed-in user's own orders, so nobody can
+    //   enumerate other customers' orders.
+    // Writes always go server-side via Cloud Functions (Admin SDK).
+    match /orders/{orderId} {
+      allow get: if true;
+      allow list: if request.auth != null && (request.auth.uid == resource.data.customerUid || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // User profile (name/phone/default address) — each signed-in user can
+    // only read and write their own document.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && (request.auth.uid == uid || isAdmin());
+    }
+
+    // Products/posts shown on the storefront — anyone can read (it's the
+    // public catalog), only the admin accounts can add/edit/remove.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Reels videos — same pattern: public read, admin-only write.
+    match /reels/{reelId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      // Likes: one doc per user (doc id = uid). Anyone can read the list
+      // (to show counts), but a user can only create/delete their own like.
+      match /likes/{uid} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // Comments: anyone can read, any signed-in user can add a comment
+      // (but only as themselves — uid must match the comment's own uid).
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
+        allow update, delete: if isAdmin() || (request.auth != null && request.auth.uid == resource.data.uid);
+      }
+    }
+
+    // Bazaar (in-person/offline sales) inventory and sales log — internal
+    // admin-only tool, never read by the customer-facing app.
+    match /bazaarProducts/{productId} {
+      allow read, write: if isAdmin();
+    }
+    match /bazaarSales/{saleId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

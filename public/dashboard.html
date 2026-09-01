@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Beleco — Dashboard</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#2B1D14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --dark:#2B1D14;
+    --primary:#CD5E33;
+    --primary-dark:#7A2005;
+    --text:#2B1D14;
+    --muted:#8A7368;
+    --muted-light:#C9B7AB;
+    --accent-peach:#FFE3CC;
+    --gold:#C98A3E;
+    --border:#F0E4DA;
+    --green:#2E8B57;
+    --red:#B3271C;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    min-height:100%;
+    height:calc(100dvh + env(safe-area-inset-bottom, 0px));
+    min-height:-webkit-fill-available;
+    background:var(--bg);
+    font-family:'Cairo', sans-serif;
+    color:var(--text);
+    overflow:hidden;
+    overscroll-behavior:none;
+  }
+  .app{
+    max-width:520px;
+    margin:0 auto;
+    width:100%;
+    height:100%;
+    height:calc(100dvh + env(safe-area-inset-bottom, 0px));
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* --- gate screen (checking / denied) --- */
+  .gate{
+    flex:1;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    padding:40px;
+    gap:14px;
+  }
+  .gate p{ color:var(--muted); font-size:13.5px; }
+  .gate a{ color:var(--primary-dark); font-weight:700; }
+
+  /* --- topbar --- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:calc(16px + env(safe-area-inset-top, 0px)) 18px 10px;
+  }
+  .topbar .brand{ display:flex; align-items:center; gap:10px; }
+  .topbar .logo{ height:26px; width:auto; }
+  .admin-badge{
+    background:var(--dark);
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.5px;
+    padding:4px 9px;
+    border-radius:999px;
+  }
+  .exit-btn{
+    background:var(--accent-peach);
+    border:none;
+    border-radius:999px;
+    padding:8px 14px;
+    font-family:'Cairo';
+    font-weight:700;
+    font-size:12px;
+    color:var(--primary-dark);
+    cursor:pointer;
+  }
+
+  /* --- panels --- */
+  .panels{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; position:relative; }
+  .panel{ display:none; min-height:100%; flex-direction:column; padding-bottom:calc(84px + env(safe-area-inset-bottom, 0px)); box-sizing:border-box; }
+  .panel.active{ display:flex; }
+
+  .placeholder{
+    flex:1;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    padding:40px 32px 120px;
+    color:var(--muted);
+  }
+  .placeholder .icon-wrap{
+    width:76px; height:76px;
+    border-radius:50%;
+    background:var(--accent-peach);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px;
+  }
+  .placeholder .icon-wrap svg{ width:34px; height:34px; stroke:var(--primary-dark); fill:none; stroke-width:1.6; }
+  .placeholder h2{ font-family:'Fraunces', serif; font-weight:600; font-size:19px; color:var(--text); margin:0 0 6px; }
+  .placeholder p{ font-size:13.5px; line-height:1.7; margin:0; max-width:280px; }
+
+  /* --- bottom tab bar --- */
+  .tabbar{
+    position:absolute;
+    bottom:calc(14px + env(safe-area-inset-bottom, 0px));
+    left:16px;
+    right:16px;
+    max-width:488px;
+    margin:0 auto;
+    display:flex; align-items:center; justify-content:space-around;
+    background:rgba(255,251,248,0.92);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    border:1px solid rgba(240,228,218,0.9);
+    border-radius:999px;
+    padding:6px 10px;
+    box-shadow:0 14px 30px -14px rgba(43,29,20,0.28);
+    z-index:50;
+  }
+  .tab-btn{
+    background:none; border:none;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:6px 4px;
+    cursor:pointer;
+    color:var(--muted-light);
+    flex:1;
+    font-family:'Cairo';
+  }
+  .tab-btn svg{ width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .tab-btn span{ font-size:10.5px; font-weight:700; color:currentColor; }
+  .tab-btn.active{ color:var(--primary-dark); }
+  .tab-btn.active svg{ stroke:var(--primary-dark); }
+
+  /* --- listings tab --- */
+  .dash-header{ padding:16px 18px 10px; }
+  .dash-title{ font-family:'Fraunces', serif; font-weight:600; font-size:19px; margin:0; }
+  .upload-form{ padding:8px 18px 20px; }
+  .df-field{ margin-bottom:12px; }
+  .df-field label{ display:block; font-size:12px; font-weight:700; margin-bottom:5px; }
+  .df-field input, .df-field select{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--border);
+    background:#FFFBF8;
+    font-family:'Cairo';
+    font-size:14px;
+    color:var(--text);
+    outline:none;
+  }
+  .df-field input:focus, .df-field select:focus{ border-color:var(--primary); }
+  .placements-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .placement-chip{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 12px;
+    border-radius:999px;
+    border:1.3px solid var(--border);
+    background:#FFFBF8;
+    font-size:11.5px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .placement-chip input{ accent-color:var(--primary); width:14px; height:14px; }
+  .image-drop{
+    border:1.5px dashed var(--border);
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    cursor:pointer;
+    color:var(--muted);
+    font-size:12.5px;
+    background:#FFFBF8;
+    margin-bottom:12px;
+  }
+  .image-drop img{ max-width:100%; max-height:120px; border-radius:10px; display:none; }
+  .upload-submit-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:var(--primary);
+    color:#fff;
+    font-family:'Cairo';
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+  }
+  .upload-submit-btn:disabled{ background:var(--muted-light); }
+  .upload-note{ font-size:11.5px; color:var(--green); text-align:center; margin-top:8px; display:none; }
+  .upload-error{ font-size:11.5px; color:var(--red); text-align:center; margin-top:8px; display:none; }
+
+  .products-section-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15.5px;
+    padding:8px 18px 10px;
+  }
+  .products-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    padding:0 18px 100px;
+  }
+  .product-tile{
+    border:1.3px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .product-tile img{ width:100%; height:120px; object-fit:cover; display:block; }
+  .pt-body{ padding:9px 10px; }
+  .pt-name{ font-size:12px; font-weight:700; margin:0 0 3px; }
+  .pt-price{ font-size:12px; font-weight:800; color:var(--primary-dark); margin:0 0 6px; }
+  .pt-delete{
+    width:100%;
+    padding:6px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:none;
+    color:var(--red);
+    font-family:'Cairo';
+    font-weight:700;
+    font-size:10.5px;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="appRoot" style="display:none;">
+  <div class="panels">
+
+    <!-- ORDERS -->
+    <div class="panel active" id="panel-orders">
+      <div class="topbar">
+        <div class="brand">
+          <img class="logo" src="assets/logo.png" alt="Beleco" />
+          <span class="admin-badge">ADMIN</span>
+        </div>
+        <button class="exit-btn" id="exitBtn">للأبلكيشن العادي</button>
+      </div>
+      <div class="placeholder">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8.5 7h7M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h7"/></svg>
+        </div>
+        <h2>الأوردرات</h2>
+        <p>هنا هتشوف كل الأوردرات، عددهم، وحالة كل واحد — قريبًا.</p>
+      </div>
+    </div>
+
+    <!-- LISTINGS / POSTS -->
+    <div class="panel" id="panel-listings">
+      <div class="dash-header">
+        <p class="dash-title">إضافة منتج جديد</p>
+      </div>
+      <div class="upload-form">
+        <div class="df-field">
+          <label>لينك المنتج من الموقع الأصلي</label>
+          <div style="display:flex; gap:8px;">
+            <input type="url" id="extractLinkInput" placeholder="https://..." style="flex:1;" />
+            <button id="extractBtn" style="flex-shrink:0; padding:0 16px; border:none; border-radius:12px; background:var(--dark); color:#fff; font-family:'Cairo'; font-weight:700; font-size:12.5px; cursor:pointer;">استخراج تلقائي</button>
+          </div>
+          <p id="extractStatus" style="font-size:11.5px; color:var(--muted); margin-top:6px;"></p>
+        </div>
+
+        <div class="image-drop" id="imageDropZone">
+          <img id="imagePreview" />
+          <span id="imageDropText">دوسي هنا لاختيار صورة المنتج</span>
+        </div>
+        <input type="file" id="productImageInput" accept="image/*" style="display:none;" />
+
+        <div class="df-field">
+          <label>اسم المنتج</label>
+          <input type="text" id="productNameInput" placeholder="مثال: فستان صيفي" />
+        </div>
+        <div class="df-field">
+          <label>السعر (جنيه)</label>
+          <input type="text" id="productPriceInput" placeholder="مثال: 650" />
+        </div>
+        <div class="df-field">
+          <label>مكان الظهور (تقدري تختاري أكتر من واحد)</label>
+          <div class="placements-grid">
+            <label class="placement-chip"><input type="checkbox" value="trend" checked /><span>ترند الأسبوع</span></label>
+            <label class="placement-chip"><input type="checkbox" value="fashion" /><span>فاشون</span></label>
+            <label class="placement-chip"><input type="checkbox" value="beauty" /><span>بيوتي</span></label>
+            <label class="placement-chip"><input type="checkbox" value="homeware" /><span>هوم وير</span></label>
+            <label class="placement-chip"><input type="checkbox" value="summer" /><span>صيف 2026</span></label>
+            <label class="placement-chip"><input type="checkbox" value="picks" /><span>اختيارات المؤثرين</span></label>
+          </div>
+        </div>
+        <div class="df-field">
+          <label>القسم (Women/Kids/Premium...)</label>
+          <select id="productCategoryInput">
+            <option value="women">حريمي</option>
+            <option value="kids">أطفال</option>
+            <option value="premium">بريميوم</option>
+            <option value="sale">تخفيضات</option>
+            <option value="general">عام</option>
+          </select>
+        </div>
+        <div class="df-field">
+          <label>لينك المنتج (اختياري)</label>
+          <input type="url" id="productLinkInput" placeholder="https://..." />
+        </div>
+        <div class="df-field">
+          <label>اللون (لو معروف)</label>
+          <input type="text" id="productColorInput" placeholder="مثال: أحمر" />
+        </div>
+        <div class="df-field">
+          <label>المقاس (لو معروف)</label>
+          <input type="text" id="productSizeInput" placeholder="مثال: M" />
+        </div>
+        <div class="df-field">
+          <label>علامة على الصورة (اختياري)</label>
+          <select id="productTagInput">
+            <option value="">بدون علامة</option>
+            <option value="New">New</option>
+            <option value="Trending">Trending</option>
+            <option value="Sale">Sale</option>
+          </select>
+        </div>
+
+        <button class="upload-submit-btn" id="uploadProductBtn">نشر المنتج</button>
+        <p class="upload-note" id="uploadNote">تم النشر بنجاح ✓</p>
+        <p class="upload-error" id="uploadError"></p>
+      </div>
+
+      <p class="products-section-title">المنتجات المنشورة</p>
+      <div class="products-grid" id="productsGrid">
+        <p style="grid-column:1/-1; color:var(--muted); font-size:13px; text-align:center; padding:20px;">بنجيب المنتجات...</p>
+      </div>
+    </div>
+
+    <!-- INSIGHTS -->
+    <div class="panel" id="panel-insights">
+      <div class="placeholder">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M3 20h18"/><rect x="5" y="12" width="3" height="8" rx="1"/><rect x="10.5" y="7" width="3" height="13" rx="1"/><rect x="16" y="3" width="3" height="17" rx="1"/></svg>
+        </div>
+        <h2>الإحصائيات</h2>
+        <p>هنا هتشوفي أداء بيليكو — مبيعات، طلبات، تفاعل — قريبًا.</p>
+      </div>
+    </div>
+
+    <!-- REELS POSTING -->
+    <div class="panel" id="panel-reels-admin">
+      <div class="dash-header">
+        <p class="dash-title">نشر فيديو Reel جديد</p>
+      </div>
+      <div class="upload-form">
+        <div class="image-drop" id="videoDropZone">
+          <video id="videoPreview" style="max-width:100%; max-height:160px; border-radius:10px; display:none;" muted></video>
+          <span id="videoDropText">دوسي هنا لاختيار فيديو</span>
+        </div>
+        <input type="file" id="reelVideoInput" accept="video/*" style="display:none;" />
+
+        <div class="df-field">
+          <label>اسم صانع المحتوى</label>
+          <input type="text" id="reelCreatorInput" placeholder="مثال: @creator_name" />
+        </div>
+        <div class="df-field">
+          <label>الوصف</label>
+          <input type="text" id="reelCaptionInput" placeholder="وصف قصير للفيديو" />
+        </div>
+        <div class="df-field">
+          <label>اسم المنتج المرتبط بالفيديو (اختياري)</label>
+          <input type="text" id="reelProductNameInput" placeholder="مثال: فستان صيفي" />
+        </div>
+        <div class="df-field">
+          <label>سعر المنتج (اختياري)</label>
+          <input type="text" id="reelProductPriceInput" placeholder="مثال: 650" />
+        </div>
+        <div class="df-field">
+          <label>لينك المنتج (اختياري)</label>
+          <input type="url" id="reelProductLinkInput" placeholder="https://..." />
+        </div>
+
+        <button class="upload-submit-btn" id="uploadReelBtn">نشر الفيديو</button>
+        <p class="upload-note" id="reelUploadNote">تم النشر بنجاح ✓</p>
+        <p class="upload-error" id="reelUploadError"></p>
+      </div>
+
+      <p class="products-section-title">الفيديوهات المنشورة</p>
+      <div id="reelsAdminList" style="padding:0 18px 100px;">
+        <p style="color:var(--muted); font-size:13px; text-align:center; padding:20px;">بنجيب الفيديوهات...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="tabbar">
+    <button class="tab-btn active" data-panel="orders">
+      <svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8.5 7h7M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h7"/></svg>
+      <span>الأوردرات</span>
+    </button>
+    <button class="tab-btn" data-panel="listings">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span>المنتجات</span>
+    </button>
+    <button class="tab-btn" data-panel="insights">
+      <svg viewBox="0 0 24 24"><path d="M3 20h18"/><rect x="5" y="12" width="3" height="8" rx="1"/><rect x="10.5" y="7" width="3" height="13" rx="1"/><rect x="16" y="3" width="3" height="17" rx="1"/></svg>
+      <span>الإحصائيات</span>
+    </button>
+    <button class="tab-btn" data-panel="reels-admin">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9.5 9.5 15 12l-5.5 2.5v-5z"/></svg>
+      <span>Reels</span>
+    </button>
+  </nav>
+</div>
+
+<div class="gate" id="gateScreen">
+  <p id="gateMessage">بنتأكد من حسابك...</p>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  const ADMIN_EMAIL = "belleco.eg@gmail.com";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhu8GZoXw-_MdqGPt63ZDB4Srpfzq-Cm4",
+    authDomain: "beleco-orders.firebaseapp.com",
+    projectId: "beleco-orders",
+    storageBucket: "beleco-orders.firebasestorage.app",
+    messagingSenderId: "865521869863",
+    appId: "1:865521869863:web:7dcfb86a4e9af542131a02"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  onAuthStateChanged(auth, (user) => {
+    const gate = document.getElementById("gateScreen");
+    const root = document.getElementById("appRoot");
+
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (user.email !== ADMIN_EMAIL) {
+      document.getElementById("gateMessage").innerHTML =
+        'الصفحة دي مخصصة لصاحب الحساب بس. <a href="app.html">ارجعي للأبلكيشن</a>';
+      gate.style.display = "flex";
+      root.style.display = "none";
+      return;
+    }
+    gate.style.display = "none";
+    root.style.display = "flex";
+  });
+
+  document.getElementById("exitBtn").addEventListener("click", () => {
+    window.location.href = "app.html";
+  });
+
+  const tabBtns = document.querySelectorAll(".tab-btn");
+  const panels = document.querySelectorAll(".panel");
+  tabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach((b) => b.classList.remove("active"));
+      panels.forEach((p) => p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("panel-" + btn.dataset.panel).classList.add("active");
+    });
+  });
+
+  /* ---------------- Auto-extract product info from URL ---------------- */
+  const EXTRACT_URL = "https://us-central1-beleco-orders.cloudfunctions.net/extractProductInfo";
+  let extractedImageUrl = null;
+
+  document.getElementById("extractBtn").addEventListener("click", async () => {
+    const statusEl = document.getElementById("extractStatus");
+    const url = document.getElementById("extractLinkInput").value.trim();
+    if (!url) {
+      statusEl.textContent = "الرجاء لصق لينك المنتج الأول";
+      statusEl.style.color = "var(--red)";
+      return;
+    }
+    statusEl.textContent = "بنستخرج البيانات...";
+    statusEl.style.color = "var(--muted)";
+
+    try {
+      const res = await fetch(EXTRACT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "حصل خطأ");
+
+      const found = [];
+      if (data.title) { document.getElementById("productNameInput").value = data.title; found.push("الاسم"); }
+      if (data.price) { document.getElementById("productPriceInput").value = data.price; found.push("السعر"); }
+      if (data.color) { document.getElementById("productColorInput").value = data.color; found.push("اللون"); }
+      if (data.size) { document.getElementById("productSizeInput").value = data.size; found.push("المقاس"); }
+      document.getElementById("productLinkInput").value = url;
+
+      if (data.image) {
+        extractedImageUrl = data.image;
+        const preview = document.getElementById("imagePreview");
+        preview.src = data.image;
+        preview.style.display = "block";
+        document.getElementById("imageDropText").style.display = "none";
+        selectedImageFile = null; // using the remote image, not a local upload
+        found.push("الصورة");
+      }
+
+      statusEl.textContent = found.length
+        ? `✓ اتجابت: ${found.join("، ")}. كمّلي أي حاجة ناقصة يدوي.`
+        : "معرفناش نجيب أي بيانات — أدخلي البيانات يدوي من فضلك.";
+      statusEl.style.color = found.length ? "var(--green)" : "var(--red)";
+    } catch (err) {
+      statusEl.textContent = "حصل خطأ في الاستخراج، أدخلي البيانات يدوي من فضلك.";
+      statusEl.style.color = "var(--red)";
+    }
+  });
+
+  /* ---------------- Product upload ---------------- */
+  let selectedImageFile = null;
+
+  document.getElementById("imageDropZone").addEventListener("click", () => {
+    document.getElementById("productImageInput").click();
+  });
+
+  document.getElementById("productImageInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    selectedImageFile = file;
+    extractedImageUrl = null;
+    const preview = document.getElementById("imagePreview");
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+    document.getElementById("imageDropText").style.display = "none";
+  });
+
+  document.getElementById("uploadProductBtn").addEventListener("click", async () => {
+    const errorEl = document.getElementById("uploadError");
+    const noteEl = document.getElementById("uploadNote");
+    errorEl.style.display = "none";
+    noteEl.style.display = "none";
+
+    const name = document.getElementById("productNameInput").value.trim();
+    const price = document.getElementById("productPriceInput").value.trim();
+    const category = document.getElementById("productCategoryInput").value;
+    const link = document.getElementById("productLinkInput").value.trim();
+    const color = document.getElementById("productColorInput").value.trim();
+    const size = document.getElementById("productSizeInput").value.trim();
+    const tag = document.getElementById("productTagInput").value;
+    const placements = Array.from(document.querySelectorAll(".placement-chip input:checked")).map((c) => c.value);
+
+    if (!selectedImageFile && !extractedImageUrl) {
+      errorEl.textContent = "الرجاء اختيار صورة أو استخراجها من اللينك";
+      errorEl.style.display = "block";
+      return;
+    }
+    if (!name || !price) {
+      errorEl.textContent = "الرجاء كتابة اسم المنتج والسعر";
+      errorEl.style.display = "block";
+      return;
+    }
+
+    const btn = document.getElementById("uploadProductBtn");
+    btn.disabled = true;
+    btn.textContent = "بننشر...";
+
+    try {
+      let imageUrl, filePath;
+      if (selectedImageFile) {
+        filePath = `products/${Date.now()}_${selectedImageFile.name}`;
+        const storageRef = ref(storage, filePath);
+        await uploadBytes(storageRef, selectedImageFile);
+        imageUrl = await getDownloadURL(storageRef);
+      } else {
+        imageUrl = extractedImageUrl; // hosted on the original site
+        filePath = null;
+      }
+
+      await addDoc(collection(db, "products"), {
+        name,
+        price,
+        category,
+        color: color || null,
+        size: size || null,
+        tag: tag || null,
+        placements: placements.length ? placements : ["trend"],
+        link: link || null,
+        imageUrl,
+        imagePath: filePath,
+        createdAt: serverTimestamp(),
+      });
+
+      noteEl.style.display = "block";
+      document.getElementById("productNameInput").value = "";
+      document.getElementById("productPriceInput").value = "";
+      document.getElementById("productLinkInput").value = "";
+      document.getElementById("productColorInput").value = "";
+      document.getElementById("productSizeInput").value = "";
+      document.getElementById("productTagInput").value = "";
+      document.getElementById("extractLinkInput").value = "";
+      document.getElementById("extractStatus").textContent = "";
+      document.getElementById("imagePreview").style.display = "none";
+      document.getElementById("imageDropText").style.display = "block";
+      document.getElementById("productImageInput").value = "";
+      document.querySelectorAll(".placement-chip input").forEach((c) => { c.checked = c.value === "trend"; });
+      selectedImageFile = null;
+      extractedImageUrl = null;
+      setTimeout(() => { noteEl.style.display = "none"; }, 2500);
+    } catch (err) {
+      errorEl.textContent = "حصل خطأ أثناء النشر، جرّبي تاني";
+      errorEl.style.display = "block";
+    }
+
+    btn.disabled = false;
+    btn.textContent = "نشر المنتج";
+  });
+
+  /* ---------------- Reel upload ---------------- */
+  let selectedVideoFile = null;
+
+  document.getElementById("videoDropZone").addEventListener("click", () => {
+    document.getElementById("reelVideoInput").click();
+  });
+
+  document.getElementById("reelVideoInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    selectedVideoFile = file;
+    const preview = document.getElementById("videoPreview");
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+    document.getElementById("videoDropText").style.display = "none";
+  });
+
+  document.getElementById("uploadReelBtn").addEventListener("click", async () => {
+    const errorEl = document.getElementById("reelUploadError");
+    const noteEl = document.getElementById("reelUploadNote");
+    errorEl.style.display = "none";
+    noteEl.style.display = "none";
+
+    const creator = document.getElementById("reelCreatorInput").value.trim();
+    const caption = document.getElementById("reelCaptionInput").value.trim();
+    const productName = document.getElementById("reelProductNameInput").value.trim();
+    const productPrice = document.getElementById("reelProductPriceInput").value.trim();
+    const productLink = document.getElementById("reelProductLinkInput").value.trim();
+
+    if (!selectedVideoFile) {
+      errorEl.textContent = "الرجاء اختيار فيديو";
+      errorEl.style.display = "block";
+      return;
+    }
+
+    const btn = document.getElementById("uploadReelBtn");
+    btn.disabled = true;
+    btn.textContent = "بننشر...";
+
+    try {
+      const filePath = `reels/${Date.now()}_${selectedVideoFile.name}`;
+      const storageRef = ref(storage, filePath);
+      await uploadBytes(storageRef, selectedVideoFile);
+      const videoUrl = await getDownloadURL(storageRef);
+
+      await addDoc(collection(db, "reels"), {
+        creator: creator || "Beleco",
+        caption: caption || "",
+        productName: productName || null,
+        productPrice: productPrice || null,
+        productLink: productLink || null,
+        videoUrl,
+        videoPath: filePath,
+        createdAt: serverTimestamp(),
+      });
+
+      noteEl.style.display = "block";
+      document.getElementById("reelCreatorInput").value = "";
+      document.getElementById("reelCaptionInput").value = "";
+      document.getElementById("reelProductNameInput").value = "";
+      document.getElementById("reelProductPriceInput").value = "";
+      document.getElementById("reelProductLinkInput").value = "";
+      document.getElementById("videoPreview").style.display = "none";
+      document.getElementById("videoDropText").style.display = "block";
+      document.getElementById("reelVideoInput").value = "";
+      selectedVideoFile = null;
+      setTimeout(() => { noteEl.style.display = "none"; }, 2500);
+    } catch (err) {
+      errorEl.textContent = "حصل خطأ أثناء النشر، جرّبي تاني";
+      errorEl.style.display = "block";
+    }
+
+    btn.disabled = false;
+    btn.textContent = "نشر الفيديو";
+  });
+
+  onSnapshot(query(collection(db, "reels"), orderBy("createdAt", "desc")), (snap) => {
+    const list = document.getElementById("reelsAdminList");
+    if (snap.empty) {
+      list.innerHTML = '<p style="color:var(--muted); font-size:13px; text-align:center; padding:20px;">لسه مفيش فيديوهات منشورة.</p>';
+      return;
+    }
+    list.innerHTML = snap.docs.map((d) => {
+      const r = d.data();
+      return `
+        <div style="display:flex; align-items:center; gap:12px; padding:10px; border:1.3px solid var(--border); border-radius:14px; margin-bottom:10px;">
+          <video src="${r.videoUrl}" style="width:56px; height:76px; object-fit:cover; border-radius:8px;" muted></video>
+          <div style="flex:1; min-width:0;">
+            <p style="font-size:12.5px; font-weight:700; margin:0 0 2px;">${r.creator}</p>
+            <p style="font-size:11.5px; color:var(--muted); margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.caption}</p>
+          </div>
+          <button class="pt-delete" data-id="${d.id}" data-path="${r.videoPath || ""}" style="width:auto; padding:8px 12px;">حذف</button>
+        </div>`;
+    }).join("");
+
+    list.querySelectorAll(".pt-delete").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        const path = btn.dataset.path;
+        btn.disabled = true;
+        try {
+          await deleteDoc(doc(db, "reels", id));
+          if (path) { try { await deleteObject(ref(storage, path)); } catch (e) {} }
+        } catch (e) {
+          btn.disabled = false;
+        }
+      });
+    });
+  });
+  const CATEGORY_LABELS = { women: "حريمي", kids: "أطفال", premium: "بريميوم", sale: "تخفيضات", general: "عام" };
+
+  onSnapshot(query(collection(db, "products"), orderBy("createdAt", "desc")), (snap) => {
+    const grid = document.getElementById("productsGrid");
+    if (snap.empty) {
+      grid.innerHTML = '<p style="grid-column:1/-1; color:var(--muted); font-size:13px; text-align:center; padding:20px;">لسه مفيش منتجات منشورة.</p>';
+      return;
+    }
+    grid.innerHTML = snap.docs.map((d) => {
+      const p = d.data();
+      return `
+        <div class="product-tile">
+          <img src="${p.imageUrl}" alt="${p.name}" />
+          <div class="pt-body">
+            <p class="pt-name">${p.name}</p>
+            <p class="pt-price">${p.price} ج.م</p>
+            <button class="pt-delete" data-id="${d.id}" data-path="${p.imagePath || ""}">حذف</button>
+          </div>
+        </div>`;
+    }).join("");
+
+    grid.querySelectorAll(".pt-delete").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        const path = btn.dataset.path;
+        btn.disabled = true;
+        btn.textContent = "...";
+        try {
+          await deleteDoc(doc(db, "products", id));
+          if (path) {
+            try { await deleteObject(ref(storage, path)); } catch (e) { /* ignore */ }
+          }
+        } catch (e) {
+          btn.disabled = false;
+          btn.textContent = "حذف";
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
