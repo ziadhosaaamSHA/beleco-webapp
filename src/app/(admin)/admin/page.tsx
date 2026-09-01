@@ -63,23 +63,51 @@ export default function AdminBazaarPOSPage() {
       }
     };
 
-    const unsubProd = bazaarService.subscribeProducts((p) => {
-      setBazaarProducts(p);
-      markLoaded();
-    });
-    const unsubSales = bazaarService.subscribeSales((s) => {
-      setBazaarSales(s);
-      markLoaded();
-    });
-    const unsubOrders = ordersService.subscribeAllOrders((o) => {
-      setPendingOrdersCount(o.filter((ord) => ord.status === "pending" || ord.status === "awaiting_calculation").length);
-    });
-    const unsubProducts = productsService.subscribeProducts(undefined, (pr) => {
-      setProductsCount(pr.length);
-    });
-    const unsubReels = reelsService.subscribeReels((r) => {
-      setReelsCount(r.length);
-    });
+    const unsubProd = bazaarService.subscribeProducts(
+      (p) => {
+        setBazaarProducts(p);
+        markLoaded();
+      },
+      (err) => {
+        console.warn("Bazaar products error:", err.message);
+        markLoaded();
+      }
+    );
+    const unsubSales = bazaarService.subscribeSales(
+      (s) => {
+        setBazaarSales(s);
+        markLoaded();
+      },
+      (err) => {
+        console.warn("Bazaar sales error:", err.message);
+        markLoaded();
+      }
+    );
+    const unsubOrders = ordersService.subscribeAllOrders(
+      (o) => {
+        setPendingOrdersCount(o.filter((ord) => ord.status === "pending" || ord.status === "awaiting_calculation").length);
+      },
+      (err) => {
+        console.warn("Orders error:", err.message);
+      }
+    );
+    const unsubProducts = productsService.subscribeProducts(
+      undefined,
+      (pr) => {
+        setProductsCount(pr.length);
+      },
+      (err) => {
+        console.warn("Products error:", err.message);
+      }
+    );
+    const unsubReels = reelsService.subscribeReels(
+      (r) => {
+        setReelsCount(r.length);
+      },
+      (err) => {
+        console.warn("Reels error:", err.message);
+      }
+    );
 
     return () => {
       unsubProd();
@@ -116,7 +144,7 @@ export default function AdminBazaarPOSPage() {
   };
 
   const isPageLoading = authLoading || (isAdmin && initialLoading);
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading);
 
   if (isPageLoading) {
     return (

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Clock, RefreshCw, RotateCcw, Home, WifiOff } from "lucide-react";
+import { Clock, RotateCcw, Home, WifiOff } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
@@ -26,7 +26,9 @@ export const LoadingTimeoutState: React.FC<LoadingTimeoutStateProps> = ({
   const { t, lang } = useLanguage();
 
   const handleRefresh = () => {
-    if (typeof window !== "undefined") {
+    if (onRetry) {
+      onRetry();
+    } else if (typeof window !== "undefined") {
       window.location.reload();
     }
   };
@@ -38,8 +40,8 @@ export const LoadingTimeoutState: React.FC<LoadingTimeoutStateProps> = ({
 
   const defaultDescription =
     lang === "ar"
-      ? "قد يكون هناك بطء في الاتصال بالإنترنت أو تأخر في استجابة الخادم. اضغطي إعادة المحاولة أو تحديث الصفحة."
-      : "There might be a slow network connection or server delay. Please try again or refresh the page.";
+      ? "قد يكون هناك بطء في الاتصال بالإنترنت أو تأخر في استجابة الخادم. اضغطي لتحديث الصفحة."
+      : "There might be a slow network connection or server delay. Tap below to refresh the page.";
 
   return (
     <div
@@ -67,28 +69,15 @@ export const LoadingTimeoutState: React.FC<LoadingTimeoutStateProps> = ({
           </p>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center gap-2 w-full pt-2">
-          {onRetry ? (
-            <Button
-              type="button"
-              variant="primary"
-              size="md"
-              onClick={onRetry}
-              leftIcon={<RefreshCw className="w-4 h-4" />}
-              className="w-full font-bold justify-center rounded-xl shadow-xs"
-            >
-              {lang === "ar" ? "إعادة المحاولة" : "Try Again"}
-            </Button>
-          ) : null}
-
+        {/* Single Refresh Button */}
+        <div className="w-full pt-2">
           <Button
             type="button"
-            variant={onRetry ? "secondary" : "primary"}
+            variant="primary"
             size="md"
             onClick={handleRefresh}
             leftIcon={<RotateCcw className="w-4 h-4" />}
-            className="w-full font-bold justify-center rounded-xl bg-brand-neutral-100 hover:bg-brand-neutral-200"
+            className="w-full font-bold justify-center rounded-xl shadow-xs"
           >
             {lang === "ar" ? "تحديث الصفحة" : "Refresh Page"}
           </Button>

@@ -136,7 +136,7 @@ export default function AdminEditProductPage() {
   }, [isAdmin, productId]);
 
   const isPageLoading = authLoading || (isAdmin && loading);
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading);
 
   if (isPageLoading) {
     return (

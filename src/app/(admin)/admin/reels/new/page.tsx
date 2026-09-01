@@ -100,7 +100,7 @@ export default function UploadNewReelPage() {
     }
   };
 
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(authLoading, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(authLoading);
 
   if (authLoading) {
     return (

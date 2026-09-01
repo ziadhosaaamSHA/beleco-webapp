@@ -18,7 +18,7 @@ export const PageLoadingWrapper: React.FC<PageLoadingWrapperProps> = ({
   isLoading,
   skeleton,
   onRetry,
-  timeoutMs = 8000,
+  timeoutMs = 5000,
   title,
   description,
   children,

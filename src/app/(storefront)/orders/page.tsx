@@ -49,7 +49,7 @@ export default function CustomerOrdersPage() {
   };
 
   const isPageLoading = !isLangReady || loading;
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading);
 
   if (isPageLoading) {
     return (

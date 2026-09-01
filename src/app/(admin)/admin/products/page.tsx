@@ -33,16 +33,33 @@ export default function AdminProductsPage() {
       return;
     }
 
-    const unsubProducts = productsService.subscribeProducts(undefined, (pr) => {
-      setProducts(pr);
-      setInitialLoading(false);
-    });
-    const unsubOrders = ordersService.subscribeAllOrders((o) => {
-      setPendingOrdersCount(o.filter((ord) => ord.status === "pending" || ord.status === "awaiting_calculation").length);
-    });
-    const unsubReels = reelsService.subscribeReels((r) => {
-      setReelsCount(r.length);
-    });
+    const unsubProducts = productsService.subscribeProducts(
+      undefined,
+      (pr) => {
+        setProducts(pr);
+        setInitialLoading(false);
+      },
+      (err) => {
+        console.warn("Products subscription:", err.message);
+        setInitialLoading(false);
+      }
+    );
+    const unsubOrders = ordersService.subscribeAllOrders(
+      (o) => {
+        setPendingOrdersCount(o.filter((ord) => ord.status === "pending" || ord.status === "awaiting_calculation").length);
+      },
+      (err) => {
+        console.warn("Orders subscription:", err.message);
+      }
+    );
+    const unsubReels = reelsService.subscribeReels(
+      (r) => {
+        setReelsCount(r.length);
+      },
+      (err) => {
+        console.warn("Reels subscription:", err.message);
+      }
+    );
 
     return () => {
       unsubProducts();
@@ -52,7 +69,7 @@ export default function AdminProductsPage() {
   }, [isAdmin]);
 
   const isPageLoading = authLoading || (isAdmin && initialLoading);
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading);
 
   if (isPageLoading) {
     return (

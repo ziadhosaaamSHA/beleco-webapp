@@ -124,7 +124,7 @@ export default function ProductDetailPage() {
   };
 
   const isPageLoading = !isLangReady || loading;
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading);
 
   if (isPageLoading) {
     if (hasTimedOut) {

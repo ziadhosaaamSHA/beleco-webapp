@@ -120,19 +120,31 @@ export const ordersService = {
       );
     }
 
-    // For guest users with local order IDs
+    // For guest users with local order IDs (uses allowed single document reads)
     if (localOrderIds.length > 0) {
-      const q = query(collection(db, ORDERS_COL));
-      return onSnapshot(
-        q,
-        (snap) => {
-          const all = mapAndSortOrders(snap.docs);
-          const filtered = all.filter((o) => localOrderIds.includes(o.id));
-          filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          callback(filtered);
-        },
-        onError
-      );
+      let isMounted = true;
+      Promise.all(
+        localOrderIds.map(async (id) => {
+          try {
+            const snap = await getDoc(doc(db, ORDERS_COL, id));
+            if (snap.exists()) {
+              return { id: snap.id, ...snap.data() };
+            }
+          } catch {}
+          return null;
+        })
+      ).then((results) => {
+        if (!isMounted) return;
+        const validDocs = results.filter(Boolean);
+        const orders = mapAndSortOrders(validDocs);
+        callback(orders);
+      }).catch((err) => {
+        if (onError) onError(err);
+      });
+
+      return () => {
+        isMounted = false;
+      };
     }
 
     callback([]);

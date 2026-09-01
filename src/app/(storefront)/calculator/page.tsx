@@ -36,7 +36,7 @@ export default function PriceCalculatorPage() {
   const [currency, setCurrency] = useState<Currency>("SAR");
   const [customDiscount, setCustomDiscount] = useState<string>("0");
 
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(!isLangReady, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(!isLangReady);
 
   if (!isLangReady) {
     return (

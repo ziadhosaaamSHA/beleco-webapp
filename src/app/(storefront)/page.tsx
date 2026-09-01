@@ -239,7 +239,7 @@ export default function StorefrontHomePage() {
     .slice(0, 6);
 
   const isPageLoading = !isLangReady || loading;
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading);
 
   // Show rich full page skeleton while language or products are loading, or timeout state if taking too long
   if (isPageLoading) {

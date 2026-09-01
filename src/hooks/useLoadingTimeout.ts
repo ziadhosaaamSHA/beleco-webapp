@@ -11,7 +11,7 @@ export function useLoadingTimeout(
   isLoading: boolean,
   options: UseLoadingTimeoutOptions = {}
 ) {
-  const { timeoutMs = 8000, onTimeout } = options;
+  const { timeoutMs = 5000, onTimeout } = options;
   const [hasTimedOut, setHasTimedOut] = useState(false);
 
   useEffect(() => {

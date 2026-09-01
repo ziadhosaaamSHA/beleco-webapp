@@ -257,7 +257,7 @@ export default function CartPage() {
     }
   };
 
-  const { hasTimedOut, resetTimeout } = useLoadingTimeout(!isLangReady, { timeoutMs: 8000 });
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(!isLangReady);
 
   if (!isLangReady) {
     return (
