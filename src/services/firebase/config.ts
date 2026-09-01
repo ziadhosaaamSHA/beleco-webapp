@@ -6,7 +6,8 @@ import { getStorage } from "firebase/storage";
 export const ADMIN_EMAILS = [
   "belleco.eg@gmail.com",
   "admin@beleco-admin.local",
-  "ziadhh2003@gmail.com"
+  "ziadhh2003@gmail.com",
+  "admin@test.com",
 ];
 
 const firebaseConfig = {
