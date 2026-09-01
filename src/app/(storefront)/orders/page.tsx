@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/Button/Button";
 import { CustomerOrderCard } from "@/components/cards/CustomerOrderCard";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { OrdersPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 import { ordersService } from "@/services/orders.service";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -46,10 +48,17 @@ export default function CustomerOrdersPage() {
     showToast(lang === "ar" ? "تم تحديث قائمة الطلبات" : "Orders list updated", "success");
   };
 
-  if (!isLangReady || loading) {
+  const isPageLoading = !isLangReady || loading;
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+
+  if (isPageLoading) {
     return (
       <StandardPageLayout showBack title={t("account.myOrders")}>
-        <OrdersPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState onRetry={resetTimeout} />
+        ) : (
+          <OrdersPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

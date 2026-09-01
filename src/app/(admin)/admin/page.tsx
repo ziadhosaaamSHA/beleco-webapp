@@ -17,6 +17,8 @@ import { FloatingNavIsland } from "@/components/layout/FloatingNavIsland";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Button } from "@/components/ui/Button/Button";
 import { AdminPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 import { SellTab } from "@/components/admin/bazaar/tabs/SellTab";
 import { InventoryTab } from "@/components/admin/bazaar/tabs/InventoryTab";
 import { ReportsTab } from "@/components/admin/bazaar/tabs/ReportsTab";
@@ -113,10 +115,17 @@ export default function AdminBazaarPOSPage() {
     }
   };
 
-  if (authLoading || (isAdmin && initialLoading)) {
+  const isPageLoading = authLoading || (isAdmin && initialLoading);
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+
+  if (isPageLoading) {
     return (
       <StandardPageLayout>
-        <AdminPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState onRetry={resetTimeout} />
+        ) : (
+          <AdminPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

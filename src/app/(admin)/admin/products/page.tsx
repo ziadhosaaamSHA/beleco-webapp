@@ -15,6 +15,8 @@ import { Heading } from "@/components/ui/Heading/Heading";
 import { Button } from "@/components/ui/Button/Button";
 import { AdminPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
 import { ProductsListTab } from "@/components/admin/products/tabs/ProductsListTab";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 
 export default function AdminProductsPage() {
   const { isAdmin, loading: authLoading } = useAuth();
@@ -49,10 +51,17 @@ export default function AdminProductsPage() {
     };
   }, [isAdmin]);
 
-  if (authLoading || (isAdmin && initialLoading)) {
+  const isPageLoading = authLoading || (isAdmin && initialLoading);
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+
+  if (isPageLoading) {
     return (
       <StandardPageLayout>
-        <AdminPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState onRetry={resetTimeout} />
+        ) : (
+          <AdminPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

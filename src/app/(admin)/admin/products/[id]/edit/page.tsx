@@ -26,6 +26,8 @@ import { Input } from "@/components/ui/Input/Input";
 import { Card } from "@/components/ui/Card/Card";
 import { AdminPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 
 const SIZE_PRESETS = ["XS", "S", "M", "L", "XL", "XXL", "36", "38", "40", "42", "Free Size"];
 const COLOR_PRESETS = [
@@ -133,10 +135,29 @@ export default function AdminEditProductPage() {
     };
   }, [isAdmin, productId]);
 
-  if (authLoading || (isAdmin && loading)) {
+  const isPageLoading = authLoading || (isAdmin && loading);
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+
+  if (isPageLoading) {
     return (
       <StandardPageLayout>
-        <AdminPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState
+            onRetry={() => {
+              resetTimeout();
+              setLoading(true);
+              productsService
+                .getProductById(productId)
+                .then((p) => {
+                  setProduct(p);
+                  setLoading(false);
+                })
+                .catch(() => setLoading(false));
+            }}
+          />
+        ) : (
+          <AdminPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

@@ -15,6 +15,8 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useLocation } from "@/context/LocationContext";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 import type { Product } from "@/types/product.types";
 import { Card } from "@/components/ui/Card/Card";
 
@@ -121,7 +123,29 @@ export default function ProductDetailPage() {
     }
   };
 
-  if (!isLangReady || loading) {
+  const isPageLoading = !isLangReady || loading;
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+
+  if (isPageLoading) {
+    if (hasTimedOut) {
+      return (
+        <div className="h-full w-full bg-brand-neutral-50 flex items-center justify-center p-4">
+          <LoadingTimeoutState
+            onRetry={() => {
+              resetTimeout();
+              setLoading(true);
+              productsService
+                .getProductById(productId)
+                .then((data) => {
+                  setProduct(data);
+                  setLoading(false);
+                })
+                .catch(() => setLoading(false));
+            }}
+          />
+        </div>
+      );
+    }
     return (
       <div className="h-full w-full bg-brand-neutral-50 flex flex-col p-4 animate-in fade-in duration-150">
         <ProductDetailsSkeleton />

@@ -17,6 +17,8 @@ import { productsService } from "@/services/products.service";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/context/ToastContext";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 import type { Product } from "@/types/product.types";
 
 const subtabs: Array<{ id: string; labelKey: string }> = [
@@ -236,11 +238,27 @@ export default function StorefrontHomePage() {
     )
     .slice(0, 6);
 
-  // Show rich full page skeleton while language or products are loading
-  if (!isLangReady || loading) {
+  const isPageLoading = !isLangReady || loading;
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+
+  // Show rich full page skeleton while language or products are loading, or timeout state if taking too long
+  if (isPageLoading) {
     return (
       <StandardPageLayout>
-        <HomePageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState
+            onRetry={() => {
+              resetTimeout();
+              setLoading(true);
+              productsService.getProducts().then((items) => {
+                setProducts(items);
+                setLoading(false);
+              }).catch(() => setLoading(false));
+            }}
+          />
+        ) : (
+          <HomePageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

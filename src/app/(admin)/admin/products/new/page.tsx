@@ -25,6 +25,8 @@ import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { AdminPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 
 const SIZE_PRESETS = ["XS", "S", "M", "L", "XL", "XXL", "36", "38", "40", "42", "Free Size"];
 const COLOR_PRESETS = [
@@ -225,10 +227,16 @@ export default function AddNewProductPage() {
     }
   };
 
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(authLoading, { timeoutMs: 8000 });
+
   if (authLoading) {
     return (
       <StandardPageLayout>
-        <AdminPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState onRetry={resetTimeout} />
+        ) : (
+          <AdminPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

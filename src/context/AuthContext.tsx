@@ -25,7 +25,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
-  const isAdmin = Boolean(user?.email && ADMIN_EMAILS.includes(user.email));
+  const normalizedAdminEmails = ADMIN_EMAILS.map((e) => e.toLowerCase().trim());
+  const isAdmin = Boolean(user?.email && normalizedAdminEmails.includes(user.email.toLowerCase().trim()));
 
   const logout = async () => {
     await signOut(auth);

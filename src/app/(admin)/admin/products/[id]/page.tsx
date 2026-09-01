@@ -36,6 +36,8 @@ import { Badge } from "@/components/ui/Badge/Badge";
 import { Card } from "@/components/ui/Card/Card";
 import { AdminPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 
 const COLOR_MAP: Record<string, string> = {
   "أسود": "#111111",
@@ -101,10 +103,29 @@ export default function AdminProductDetailsPage() {
     };
   }, [isAdmin, productId]);
 
-  if (authLoading || (isAdmin && loading)) {
+  const isPageLoading = authLoading || (isAdmin && loading);
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+
+  if (isPageLoading) {
     return (
       <StandardPageLayout>
-        <AdminPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState
+            onRetry={() => {
+              resetTimeout();
+              setLoading(true);
+              productsService
+                .getProductById(productId)
+                .then((p) => {
+                  setProduct(p);
+                  setLoading(false);
+                })
+                .catch(() => setLoading(false));
+            }}
+          />
+        ) : (
+          <AdminPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

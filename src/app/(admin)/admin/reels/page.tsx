@@ -15,6 +15,8 @@ import { Heading } from "@/components/ui/Heading/Heading";
 import { Button } from "@/components/ui/Button/Button";
 import { AdminPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
 import { ReelsGalleryTab } from "@/components/admin/reels/tabs/ReelsGalleryTab";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 
 export default function AdminReelsPage() {
   const { isAdmin, loading: authLoading } = useAuth();
@@ -49,10 +51,17 @@ export default function AdminReelsPage() {
     };
   }, [isAdmin]);
 
-  if (authLoading || (isAdmin && initialLoading)) {
+  const isPageLoading = authLoading || (isAdmin && initialLoading);
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(isPageLoading, { timeoutMs: 8000 });
+
+  if (isPageLoading) {
     return (
       <StandardPageLayout>
-        <AdminPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState onRetry={resetTimeout} />
+        ) : (
+          <AdminPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

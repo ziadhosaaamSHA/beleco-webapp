@@ -63,6 +63,36 @@ export const productsService = {
     return { id: snap.id, ...snap.data() } as Product;
   },
 
+  // Get all products once
+  async getProducts(filters?: ProductFilterDTO): Promise<Product[]> {
+    const q = query(collection(db, PRODUCTS_COL), orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
+    let items = snap.docs.map((d) => {
+      const data = d.data();
+      let createdAt = typeof data.createdAt === "number" ? data.createdAt : Date.now();
+      if (data.createdAt && typeof data.createdAt.toMillis === "function") {
+        createdAt = data.createdAt.toMillis();
+      }
+      return {
+        id: d.id,
+        ...data,
+        createdAt,
+      } as Product;
+    });
+
+    if (filters?.category && filters.category !== "all") {
+      items = items.filter((p) => p.category === filters.category);
+    }
+    if (filters?.placement && filters.placement !== "all") {
+      items = items.filter(
+        (p) =>
+          p.placement === filters.placement ||
+          (Array.isArray(p.placements) && p.placements.includes(filters.placement as string))
+      );
+    }
+    return items;
+  },
+
   // Subscribe to all storefront products
   subscribeProducts(
     filters?: ProductFilterDTO,

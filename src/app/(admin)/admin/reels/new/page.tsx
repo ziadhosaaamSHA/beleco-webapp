@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Card } from "@/components/ui/Card/Card";
 import { AdminPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 
 export default function UploadNewReelPage() {
   const router = useRouter();
@@ -98,10 +100,16 @@ export default function UploadNewReelPage() {
     }
   };
 
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(authLoading, { timeoutMs: 8000 });
+
   if (authLoading) {
     return (
       <StandardPageLayout>
-        <AdminPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState onRetry={resetTimeout} />
+        ) : (
+          <AdminPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

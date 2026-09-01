@@ -26,6 +26,8 @@ import { Input } from "@/components/ui/Input/Input";
 import { Card } from "@/components/ui/Card/Card";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { CartPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { useCart, type CartItem } from "@/context/CartContext";
 import { useLocation } from "@/context/LocationContext";
@@ -255,10 +257,16 @@ export default function CartPage() {
     }
   };
 
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(!isLangReady, { timeoutMs: 8000 });
+
   if (!isLangReady) {
     return (
       <StandardPageLayout>
-        <CartPageSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState onRetry={resetTimeout} />
+        ) : (
+          <CartPageSkeleton />
+        )}
       </StandardPageLayout>
     );
   }

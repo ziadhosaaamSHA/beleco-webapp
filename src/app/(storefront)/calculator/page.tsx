@@ -7,6 +7,8 @@ import { Heading } from "@/components/ui/Heading/Heading";
 import { Input } from "@/components/ui/Input/Input";
 import { Card } from "@/components/ui/Card/Card";
 import { CalculatorSkeleton } from "@/components/ui/Skeleton/Skeleton";
+import { useLoadingTimeout } from "@/hooks/useLoadingTimeout";
+import { LoadingTimeoutState } from "@/components/ui/LoadingTimeout/LoadingTimeoutState";
 import { Button } from "@/components/ui/Button/Button";
 import { cn } from "@/lib/utils/cn";
 import { useLanguage } from "@/context/LanguageContext";
@@ -34,10 +36,16 @@ export default function PriceCalculatorPage() {
   const [currency, setCurrency] = useState<Currency>("SAR");
   const [customDiscount, setCustomDiscount] = useState<string>("0");
 
+  const { hasTimedOut, resetTimeout } = useLoadingTimeout(!isLangReady, { timeoutMs: 8000 });
+
   if (!isLangReady) {
     return (
       <StandardPageLayout showBack title={t("calc.title")}>
-        <CalculatorSkeleton />
+        {hasTimedOut ? (
+          <LoadingTimeoutState onRetry={resetTimeout} />
+        ) : (
+          <CalculatorSkeleton />
+        )}
       </StandardPageLayout>
     );
   }
