@@ -44,9 +44,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ isOpen, onClose }) => {
 
     try {
       await logout();
+      try {
+        localStorage.removeItem("beleco_welcomed");
+      } catch {}
       showToast(lang === "ar" ? "تم تسجيل الخروج بنجاح" : "Logged out successfully", "success");
       onClose();
-      router.push("/");
+      router.push("/welcome");
     } catch {
       showToast(lang === "ar" ? "حدث خطأ أثناء تسجيل الخروج" : "Error logging out", "error");
     }

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { Card } from "@/components/ui/Card/Card";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
+import { useRouter } from "next/navigation";
 import { productsService } from "@/services/products.service";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -56,9 +57,19 @@ const picksSlides = [
 ];
 
 export default function StorefrontHomePage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { t, lang, isLangReady } = useLanguage();
   const { showToast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !authLoading) {
+      const hasSeenWelcome = localStorage.getItem("beleco_welcomed") === "true";
+      if (!user && !hasSeenWelcome) {
+        router.replace("/welcome");
+      }
+    }
+  }, [user, authLoading, router]);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

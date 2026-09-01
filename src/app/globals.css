@@ -4,6 +4,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* ==========================================================================
+     Beleco Core Brand Tokens (Single Source of Truth)
+     Edit these base variables to dynamically adapt all percentage shades!
+     ========================================================================== */
+  --color-primary: #d14d06;   /* Beleco Sun Tangerine (Base 500) */
+  --color-neutral: #241A14;   /* Rich Espresso & Warm Neutrals (Base 900) */
+  --color-tertiary: #D49B44;  /* Souq Gold / Golden Amber (Base 500) */
+  --color-success: #2E8B57;   /* Success Sage (Base 500) */
+  --color-danger: #DC2626;    /* Danger Crimson (Base 500) */
+  --color-info: #0284C7;      /* Info Sky (Base 500) */
+}
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;

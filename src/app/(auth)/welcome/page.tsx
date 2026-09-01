@@ -84,12 +84,17 @@ export default function WelcomePage() {
             {lang === "ar" ? "ابدئي دلوقتي" : "Get Started"}
           </Button>
 
-          <Link
-            href="/"
-            className="text-xs font-sans font-bold text-white/85 hover:text-white transition-colors underline"
+          <button
+            onClick={() => {
+              try {
+                localStorage.setItem("beleco_welcomed", "true");
+              } catch {}
+              router.push("/");
+            }}
+            className="text-xs font-sans font-bold text-white/85 hover:text-white transition-colors underline cursor-pointer bg-transparent border-none p-1"
           >
             {lang === "ar" ? "تصفح كزائر" : "Continue as Guest"}
-          </Link>
+          </button>
         </div>
       </div>
     </div>

@@ -1,5 +1,48 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * Helper to compute 50-950 color shades using native CSS color-mix percentages.
+ * - 50..400: progressively mixed with white (percentage tint)
+ * - 500: pure base token
+ * - 600..950: progressively mixed with black (percentage shade)
+ */
+function createColorScale(cssVar: string) {
+  return {
+    50: `color-mix(in srgb, var(${cssVar}) 6%, white)`,
+    100: `color-mix(in srgb, var(${cssVar}) 14%, white)`,
+    200: `color-mix(in srgb, var(${cssVar}) 28%, white)`,
+    300: `color-mix(in srgb, var(${cssVar}) 48%, white)`,
+    400: `color-mix(in srgb, var(${cssVar}) 72%, white)`,
+    500: `var(${cssVar})`,
+    600: `color-mix(in srgb, var(${cssVar}) 85%, black)`,
+    700: `color-mix(in srgb, var(${cssVar}) 70%, black)`,
+    800: `color-mix(in srgb, var(${cssVar}) 55%, black)`,
+    900: `color-mix(in srgb, var(${cssVar}) 40%, black)`,
+    950: `color-mix(in srgb, var(${cssVar}) 20%, black)`,
+    DEFAULT: `var(${cssVar})`,
+  };
+}
+
+/**
+ * Helper to compute neutral earth scale (where 900 is base espresso, 50 is near-white canvas).
+ */
+function createNeutralScale(cssVar: string) {
+  return {
+    50: `color-mix(in srgb, var(${cssVar}) 3%, white)`,
+    100: `color-mix(in srgb, var(${cssVar}) 6%, white)`,
+    200: `color-mix(in srgb, var(${cssVar}) 14%, white)`,
+    300: `color-mix(in srgb, var(${cssVar}) 26%, white)`,
+    400: `color-mix(in srgb, var(${cssVar}) 45%, white)`,
+    500: `color-mix(in srgb, var(${cssVar}) 62%, white)`,
+    600: `color-mix(in srgb, var(${cssVar}) 75%, white)`,
+    700: `color-mix(in srgb, var(${cssVar}) 85%, white)`,
+    800: `color-mix(in srgb, var(${cssVar}) 92%, white)`,
+    900: `var(${cssVar})`,
+    950: `color-mix(in srgb, var(${cssVar}) 65%, black)`,
+    DEFAULT: `var(${cssVar})`,
+  };
+}
+
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,60 +52,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: "#FEF6EE",
-          100: "#FDEBD7",
-          200: "#FBD4AF",
-          300: "#F7B57D",
-          400: "#F38D43",
-          500: "#F0660E", // BASE PRIMARY
-          600: "#D64E07",
-          700: "#B03908",
-          800: "#8C2E0E",
-          900: "#73280F",
-          950: "#3E1105",
-        },
+        primary: createColorScale("--color-primary"),
         brand: {
-          neutral: {
-            50: "#FBF9F8",
-            100: "#F5F1EE",
-            200: "#E8E0D9",
-            300: "#D3C5BA",
-            400: "#A89485",
-            500: "#7A6658",
-            600: "#5D4B3E",
-            700: "#46372D",
-            800: "#34271F",
-            900: "#241A14", // BASE SECONDARY
-            950: "#140E0A",
-          },
+          neutral: createNeutralScale("--color-neutral"),
         },
-        tertiary: {
-          50: "#FDF9F0",
-          100: "#FAF0DB",
-          200: "#F4DEB3",
-          300: "#EDC683",
-          400: "#E4AE58",
-          500: "#D49B44", // BASE TERTIARY
-          600: "#B87B2E",
-          700: "#925C23",
-          800: "#774921",
-          900: "#633E1F",
-        },
+        tertiary: createColorScale("--color-tertiary"),
         success: {
-          50: "#F2F9F4",
-          500: "#2E8B57",
-          700: "#1E5C39",
+          50: `color-mix(in srgb, var(--color-success) 8%, white)`,
+          500: `var(--color-success)`,
+          700: `color-mix(in srgb, var(--color-success) 70%, black)`,
+          DEFAULT: `var(--color-success)`,
         },
         danger: {
-          50: "#FEF2F2",
-          500: "#DC2626",
-          700: "#991B1B",
+          50: `color-mix(in srgb, var(--color-danger) 8%, white)`,
+          500: `var(--color-danger)`,
+          700: `color-mix(in srgb, var(--color-danger) 70%, black)`,
+          DEFAULT: `var(--color-danger)`,
         },
         info: {
-          50: "#F0F9FF",
-          500: "#0284C7",
-          700: "#0369A1",
+          50: `color-mix(in srgb, var(--color-info) 8%, white)`,
+          500: `var(--color-info)`,
+          700: `color-mix(in srgb, var(--color-info) 70%, black)`,
+          DEFAULT: `var(--color-info)`,
         },
       },
       fontFamily: {
