@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Search, Truck, Package, Clock, CheckCircle2, AlertCircle, MapPin, Phone, ArrowRight, ArrowLeft } from "lucide-react";
 import { StandardPageLayout } from "@/components/layout/StandardPageLayout";
 import { Heading } from "@/components/ui/Heading/Heading";
@@ -275,16 +276,19 @@ export default function TrackShipmentsPage() {
                       </span>
                     </div>
 
-                    {ord.items && ord.items.length > 0 && (
-                      <div className="flex flex-col gap-1 text-[11px] text-brand-neutral-500 px-1">
-                        {ord.items.map((item, i) => (
-                          <div key={i} className="flex items-center justify-between">
-                            <span className="truncate">{item.name} ({item.quantity}x)</span>
-                            <span className="font-mono">{formatPrice(item.price).formatted}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {/* Action Links */}
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-brand-neutral-100">
+                      <Link href={`/orders/${ord.id}`} className="w-full">
+                        <Button variant="secondary" size="sm" className="w-full text-xs font-bold rounded-xl justify-center">
+                          {lang === "ar" ? "تفاصيل الفاتورة" : "View Invoice"}
+                        </Button>
+                      </Link>
+                      <Link href={`/orders/${ord.id}/tracking`} className="w-full">
+                        <Button variant="primary" size="sm" leftIcon={<Truck className="w-3.5 h-3.5" />} className="w-full text-xs font-bold rounded-xl justify-center">
+                          {lang === "ar" ? "مسار الشحنة" : "Live Tracking"}
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </Card>
               );

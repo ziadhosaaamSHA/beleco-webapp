@@ -41,7 +41,11 @@ export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({
   const isChildPage = showBack !== undefined ? showBack : !ROOT_PATHS.includes(pathname);
 
   // Derive default back destination if needed
-  const defaultBackHref = pathname.startsWith("/account/") || pathname === "/orders"
+  const defaultBackHref = pathname.endsWith("/tracking") && pathname.startsWith("/orders/")
+    ? pathname.replace("/tracking", "")
+    : pathname.startsWith("/orders/")
+    ? "/orders"
+    : pathname.startsWith("/account/") || pathname === "/orders"
     ? "/account"
     : pathname.startsWith("/products/")
     ? "/"
@@ -51,6 +55,8 @@ export const TopHeaderBar: React.FC<TopHeaderBarProps> = ({
   const getResolvedTitle = (): string => {
     if (title) return title;
     if (pathname === "/orders") return t("account.myOrders");
+    if (pathname.endsWith("/tracking")) return t("account.tracking");
+    if (pathname.startsWith("/orders/")) return lang === "ar" ? "تفاصيل الطلب" : "Order Details";
     if (pathname === "/account/profile") return t("account.personalInfo");
     if (pathname === "/account/address") return t("account.address");
     if (pathname === "/account/settings") return t("account.settings");

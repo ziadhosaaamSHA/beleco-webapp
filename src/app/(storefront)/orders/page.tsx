@@ -68,16 +68,6 @@ export default function CustomerOrdersPage() {
                 : "Track the live status of your current and past orders step by step"}
             </Heading>
           </div>
-          <Link href="/account/tracking">
-            <Button
-              variant="secondary"
-              size="sm"
-              leftIcon={<Truck className="w-3.5 h-3.5 text-primary-500" />}
-              className="rounded-xl font-bold text-xs shrink-0 my-0"
-            >
-              {t("account.tracking")}
-            </Button>
-          </Link>
         </div>
 
         {orders.length > 0 ? (

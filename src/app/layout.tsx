@@ -31,8 +31,8 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Beleco — بيليكو",
-  description: "اكتشفي أرقى تشكيلات العبايات والفساتين وتسوقي من شي إن وترينديول بسهولة",
+  title: "Beleco — اطلبي من اي مكان",
+  description: "اطلبي من شي إن وترينديول وأشهر البراندات العالمية، وهيوصلك لباب بيتك في مصر والإمارات.",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon-32.png",

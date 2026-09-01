@@ -1,10 +1,26 @@
 "use client";
 
 import React from "react";
-import { Package, Clock, CheckCircle2, Truck, AlertCircle, Calculator, Check, CreditCard, ShoppingBag } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  Package,
+  Clock,
+  CheckCircle2,
+  Truck,
+  AlertCircle,
+  Calculator,
+  Check,
+  CreditCard,
+  ShoppingBag,
+  ChevronRight,
+  ChevronLeft,
+  FileText,
+} from "lucide-react";
 import { Card } from "@/components/ui/Card/Card";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { Heading } from "@/components/ui/Heading/Heading";
+import { Button } from "@/components/ui/Button/Button";
 import { useLanguage } from "@/context/LanguageContext";
 import { useLocation } from "@/context/LocationContext";
 import type { Order, OrderStatus } from "@/types/order.types";
@@ -37,8 +53,10 @@ const statusConfig: Record<
 };
 
 export const CustomerOrderCard: React.FC<CustomerOrderCardProps> = ({ order, onViewDetails }) => {
-  const { t, lang } = useLanguage();
+  const { t, lang, dir } = useLanguage();
   const { formatPrice } = useLocation();
+  const router = useRouter();
+
   const status = statusConfig[order.status] || statusConfig.awaiting_calculation;
   const StatusIcon = status.icon;
 
@@ -48,17 +66,28 @@ export const CustomerOrderCard: React.FC<CustomerOrderCardProps> = ({ order, onV
     year: "numeric",
   });
 
-  const { formatted: formattedTotal } = formatPrice(order.total);
+  const { formatted: formattedTotal } = formatPrice(order.total || 0);
+
+  const handleCardClick = () => {
+    if (onViewDetails) {
+      onViewDetails(order);
+    } else {
+      router.push(`/orders/${order.id}`);
+    }
+  };
+
+  const isShippedOrActive = ["shipped", "preparing", "ordered", "confirmed"].includes(order.status);
 
   return (
     <Card
       variant="interactive"
-      onClick={() => onViewDetails?.(order)}
-      className="p-4 flex flex-col gap-3 bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs text-left"
+      onClick={handleCardClick}
+      className="p-4 flex flex-col gap-3 bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs text-left cursor-pointer hover:border-primary-500/80 transition-all group"
     >
+      {/* Top Header Row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-brand-neutral-100 border border-brand-neutral-200 flex items-center justify-center text-brand-neutral-800 shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-brand-neutral-100 border border-brand-neutral-200 flex items-center justify-center text-brand-neutral-800 shrink-0 group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
             <Package className="w-4.5 h-4.5" />
           </div>
           <div>
@@ -77,23 +106,61 @@ export const CustomerOrderCard: React.FC<CustomerOrderCardProps> = ({ order, onV
         </Badge>
       </div>
 
+      {/* Middle Details / Item Preview */}
       <div className="py-2.5 border-y border-brand-neutral-100 flex items-center justify-between text-xs font-sans text-brand-neutral-600">
-        <span>
-          {order.items?.length || 0} {lang === "ar" ? "منتجات" : "items"}
-        </span>
-        <span className="truncate max-w-[190px]">
-          {lang === "ar" ? "الشحن إلى: " : "Ship to: "}
+        <div className="flex items-center gap-2">
+          <span>
+            {order.items?.length || 0} {lang === "ar" ? "منتجات" : "items"}
+          </span>
+          {order.items && order.items.length > 0 && order.items[0].imageUrl && (
+            <div className="w-6 h-6 rounded-md overflow-hidden bg-brand-neutral-100 border border-brand-neutral-200 shrink-0">
+              <img src={order.items[0].imageUrl} alt="" className="w-full h-full object-cover" />
+            </div>
+          )}
+        </div>
+
+        <span className="truncate max-w-[180px] font-medium text-brand-neutral-700">
+          {lang === "ar" ? "التوصيل إلى: " : "Ship to: "}
           {order.customerInfo?.city || order.customerInfo?.governorate || "العنوان"}
         </span>
       </div>
 
-      <div className="flex items-center justify-between pt-0.5">
+      {/* Price & Summary */}
+      <div className="flex items-center justify-between">
         <span className="text-xs font-sans font-medium text-brand-neutral-500">
-          {lang === "ar" ? "الإجمالي" : "Total"}
+          {lang === "ar" ? "الإجمالي الكلي" : "Total Amount"}
         </span>
         <span className="font-mono font-extrabold text-base text-primary-600 tabular-nums">
           {formattedTotal}
         </span>
+      </div>
+
+      {/* Action Buttons Row */}
+      <div
+        className="grid grid-cols-2 gap-2 pt-1 border-t border-brand-neutral-100"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Link href={`/orders/${order.id}`} className="w-full">
+          <Button
+            variant="secondary"
+            size="sm"
+            leftIcon={<FileText className="w-3.5 h-3.5 text-brand-neutral-600" />}
+            className="w-full rounded-xl font-bold text-xs justify-center"
+          >
+            {lang === "ar" ? "تفاصيل الطلب" : "View Details"}
+          </Button>
+        </Link>
+
+        <Link href={`/orders/${order.id}/tracking`} className="w-full">
+          <Button
+            variant={isShippedOrActive ? "primary" : "secondary"}
+            size="sm"
+            leftIcon={<Truck className="w-3.5 h-3.5" />}
+            className="w-full rounded-xl font-bold text-xs justify-center"
+          >
+            {lang === "ar" ? "تتبع الشحنة" : "Track Status"}
+          </Button>
+        </Link>
       </div>
     </Card>
   );
