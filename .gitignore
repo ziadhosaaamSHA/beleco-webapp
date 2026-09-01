@@ -15,3 +15,12 @@ ui-debug.log
 # OS files
 .DS_Store
 Thumbs.db
+
+# Public HTML files
+public/index.html
+public/admin.html
+public/login.html
+public/dashboard.html
+public/welcome.html
+public/app.html
+public/privacy.html
