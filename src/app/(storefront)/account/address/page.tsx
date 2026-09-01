@@ -200,14 +200,14 @@ export default function MyAddressesPage() {
 
   if (loading) {
     return (
-      <StandardPageLayout>
+      <StandardPageLayout showBack backHref="/account" title={t("account.address")}>
         <AddressesPageSkeleton />
       </StandardPageLayout>
     );
   }
 
   return (
-    <StandardPageLayout>
+    <StandardPageLayout showBack backHref="/account" title={t("account.address")}>
       <div className="addresses-page flex flex-col gap-4 px-4 pt-2 pb-16 animate-page-enter text-left" dir="ltr">
         {/* Header */}
         <div className="flex items-center justify-between">

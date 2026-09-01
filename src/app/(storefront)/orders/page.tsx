@@ -48,14 +48,14 @@ export default function CustomerOrdersPage() {
 
   if (!isLangReady || loading) {
     return (
-      <StandardPageLayout>
+      <StandardPageLayout showBack title={t("account.myOrders")}>
         <OrdersPageSkeleton />
       </StandardPageLayout>
     );
   }
 
   return (
-    <StandardPageLayout onRefresh={handleRefresh}>
+    <StandardPageLayout showBack title={t("account.myOrders")} onRefresh={handleRefresh}>
       <div className="orders-page flex flex-col gap-4 px-4 pt-3 pb-16 animate-page-enter text-left" dir="ltr">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1">

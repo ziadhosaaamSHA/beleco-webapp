@@ -36,7 +36,7 @@ export default function PriceCalculatorPage() {
 
   if (!isLangReady) {
     return (
-      <StandardPageLayout>
+      <StandardPageLayout showBack title={t("calc.title")}>
         <CalculatorSkeleton />
       </StandardPageLayout>
     );
@@ -75,7 +75,7 @@ export default function PriceCalculatorPage() {
   };
 
   return (
-    <StandardPageLayout>
+    <StandardPageLayout showBack title={t("calc.title")}>
       <div className="calculator-page flex flex-col gap-4 px-4 pt-2 pb-8 animate-page-enter text-left" dir="ltr">
         {/* Title Header */}
         <div className="flex flex-col gap-1">

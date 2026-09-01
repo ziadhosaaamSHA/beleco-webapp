@@ -27,22 +27,17 @@ import { Heading } from "@/components/ui/Heading/Heading";
 import { Card } from "@/components/ui/Card/Card";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { Button } from "@/components/ui/Button/Button";
-import { Modal } from "@/components/ui/Modal/Modal";
 import { AccountPageSkeleton } from "@/components/ui/Skeleton/Skeleton";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { useLocation } from "@/context/LocationContext";
 import { useToast } from "@/context/ToastContext";
 import { useConfirm } from "@/context/ConfirmContext";
 import { ordersService } from "@/services/orders.service";
 import type { Order } from "@/types/order.types";
 
-type PolicyKey = "about" | "shipping" | "orders" | "returns" | "disclaimer" | null;
-
 export default function AccountPage() {
   const { user, isAdmin, loading: authLoading, logout } = useAuth();
-  const { t, lang, toggleLanguage, dir, isLangReady } = useLanguage();
-  const { countryInfo, openModal: openLocationModal } = useLocation();
+  const { t, lang, dir, isLangReady } = useLanguage();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
   const router = useRouter();
@@ -50,7 +45,6 @@ export default function AccountPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [addressCount, setAddressCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [activePolicy, setActivePolicy] = useState<PolicyKey>(null);
 
   useEffect(() => {
     // Load customer orders count in real-time
@@ -114,7 +108,7 @@ export default function AccountPage() {
       <div className="account-page flex flex-col gap-4 px-4 pt-2 pb-16 animate-page-enter text-left" dir="ltr">
         {/* User Profile Hero Card */}
         <Card className="p-4 flex items-center justify-between bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs">
-          <div className="flex items-center gap-3">
+          <Link href="/account/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="w-12 h-12 rounded-full bg-brand-neutral-100 border border-brand-neutral-200 flex items-center justify-center text-primary-500 shrink-0">
               <User className="w-6 h-6 stroke-[1.8]" />
             </div>
@@ -126,7 +120,7 @@ export default function AccountPage() {
                 {user?.email || (lang === "ar" ? "عميلة مميزة في بيليكو" : "Valued Beleco Customer")}
               </span>
             </div>
-          </div>
+          </Link>
 
           {user ? (
             <button
@@ -170,9 +164,21 @@ export default function AccountPage() {
               </span>
             </Card>
           </Link>
+
+          <Link href="/account/profile">
+            <Card className="p-3 flex flex-col items-center justify-center text-center bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs hover:border-primary-500 transition-colors">
+              <User className="w-4.5 h-4.5 text-primary-500 mb-1" />
+              <span className="font-sans font-extrabold text-xs text-brand-neutral-950 truncate max-w-full">
+                {user ? (lang === "ar" ? "نشط" : "Active") : (lang === "ar" ? "زائر" : "Guest")}
+              </span>
+              <span className="text-[10px] font-sans text-brand-neutral-500 mt-0.5">
+                {lang === "ar" ? "الملف الشخصي" : "Profile"}
+              </span>
+            </Card>
+          </Link>
         </div>
 
-        {/* LEGACY APP GROUP 1: PERSONAL & ORDERS NAVIGATION (Listed directly as rows) */}
+        {/* PERSONAL & ORDERS NAVIGATION */}
         <div className="flex flex-col gap-2 pt-1">
           <Heading variant="section-title" className="text-xs font-bold text-brand-neutral-500 uppercase tracking-wider px-1">
             {lang === "ar" ? "بيانات الحساب والطلبات" : "Account & Orders"}
@@ -180,7 +186,7 @@ export default function AccountPage() {
 
           <Card className="p-1 flex flex-col bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs divide-y divide-brand-neutral-100">
             <Link
-              href="/account/address"
+              href="/account/profile"
               className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900"
             >
               <div className="flex items-center gap-3">
@@ -266,16 +272,16 @@ export default function AccountPage() {
           </Card>
         </div>
 
-        {/* LEGACY APP GROUP 2: PREFERENCES & SETTINGS */}
+        {/* SETTINGS & PREFERENCES */}
         <div className="flex flex-col gap-2 pt-1">
           <Heading variant="section-title" className="text-xs font-bold text-brand-neutral-500 uppercase tracking-wider px-1">
             {lang === "ar" ? "الإعدادات واللغة" : "Settings & Language"}
           </Heading>
 
           <Card className="p-1 flex flex-col bg-white border border-brand-neutral-200/90 rounded-2xl shadow-xs divide-y divide-brand-neutral-100">
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900 text-left w-full"
+            <Link
+              href="/account/settings"
+              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-brand-neutral-100 text-brand-neutral-700 flex items-center justify-center">
@@ -286,23 +292,7 @@ export default function AccountPage() {
               <div className="flex items-center gap-1.5 font-mono text-xs text-primary-600 font-bold bg-primary-50 px-2.5 py-1 rounded-lg border border-primary-200">
                 <span>{lang === "ar" ? "العربية (AR)" : "English (EN)"}</span>
               </div>
-            </button>
-
-            <button
-              onClick={openLocationModal}
-              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900 text-left w-full"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-brand-neutral-100 text-brand-neutral-700 flex items-center justify-center">
-                  <MapPin className="w-4 h-4" />
-                </div>
-                <span>{t("location.select")}</span>
-              </div>
-              <div className="flex items-center gap-1.5 font-mono text-xs text-brand-neutral-600">
-                <span>{t(countryInfo.nameKey)}</span>
-                <ChevronIcon className="w-4 h-4 text-brand-neutral-400" />
-              </div>
-            </button>
+            </Link>
 
             {isAdmin && (
               <Link
@@ -323,7 +313,7 @@ export default function AccountPage() {
           </Card>
         </div>
 
-        {/* LEGACY APP GROUP 3: CONTACT & BRAND POLICIES */}
+        {/* STORE POLICIES & HELP */}
         <div className="flex flex-col gap-2 pt-1">
           <Heading variant="section-title" className="text-xs font-bold text-brand-neutral-500 uppercase tracking-wider px-1">
             {lang === "ar" ? "المساعدة وسياسات المتجر" : "Help & Policies"}
@@ -343,9 +333,9 @@ export default function AccountPage() {
               <ChevronIcon className="w-4 h-4 text-brand-neutral-400" />
             </Link>
 
-            <button
-              onClick={() => setActivePolicy("about")}
-              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900 text-left w-full"
+            <Link
+              href="/account/about"
+              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-brand-neutral-100 text-brand-neutral-700 flex items-center justify-center">
@@ -354,11 +344,11 @@ export default function AccountPage() {
                 <span>{t("policy.about")}</span>
               </div>
               <ChevronIcon className="w-4 h-4 text-brand-neutral-400" />
-            </button>
+            </Link>
 
-            <button
-              onClick={() => setActivePolicy("shipping")}
-              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900 text-left w-full"
+            <Link
+              href="/account/shipping"
+              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-brand-neutral-100 text-brand-neutral-700 flex items-center justify-center">
@@ -367,11 +357,11 @@ export default function AccountPage() {
                 <span>{t("policy.shipping")}</span>
               </div>
               <ChevronIcon className="w-4 h-4 text-brand-neutral-400" />
-            </button>
+            </Link>
 
-            <button
-              onClick={() => setActivePolicy("orders")}
-              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900 text-left w-full"
+            <Link
+              href="/account/orders-policy"
+              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-brand-neutral-100 text-brand-neutral-700 flex items-center justify-center">
@@ -380,11 +370,11 @@ export default function AccountPage() {
                 <span>{t("policy.orders")}</span>
               </div>
               <ChevronIcon className="w-4 h-4 text-brand-neutral-400" />
-            </button>
+            </Link>
 
-            <button
-              onClick={() => setActivePolicy("returns")}
-              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900 text-left w-full"
+            <Link
+              href="/account/returns"
+              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-brand-neutral-100 text-brand-neutral-700 flex items-center justify-center">
@@ -393,11 +383,11 @@ export default function AccountPage() {
                 <span>{t("policy.returns")}</span>
               </div>
               <ChevronIcon className="w-4 h-4 text-brand-neutral-400" />
-            </button>
+            </Link>
 
-            <button
-              onClick={() => setActivePolicy("disclaimer")}
-              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900 text-left w-full"
+            <Link
+              href="/account/disclaimer"
+              className="flex items-center justify-between p-3.5 hover:bg-brand-neutral-50 transition-colors rounded-xl text-sm font-sans font-bold text-brand-neutral-900"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-brand-neutral-100 text-brand-neutral-700 flex items-center justify-center">
@@ -406,7 +396,7 @@ export default function AccountPage() {
                 <span>{t("policy.disclaimer")}</span>
               </div>
               <ChevronIcon className="w-4 h-4 text-brand-neutral-400" />
-            </button>
+            </Link>
           </Card>
         </div>
 
@@ -433,31 +423,6 @@ export default function AccountPage() {
           </div>
         )}
       </div>
-
-      {/* Policy Details Modal */}
-      {activePolicy && (
-        <Modal
-          isOpen={!!activePolicy}
-          onClose={() => setActivePolicy(null)}
-          title={t(`policy.${activePolicy}`)}
-          icon={<FileText className="w-4 h-4" />}
-          maxWidth="md"
-        >
-          <div className="text-sm font-sans text-brand-neutral-700 leading-relaxed whitespace-pre-line py-2">
-            {t(`policy.${activePolicy}Body`)}
-          </div>
-          <div className="pt-3 border-t border-brand-neutral-100 flex justify-end">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setActivePolicy(null)}
-              className="rounded-xl font-bold text-xs"
-            >
-              {lang === "ar" ? "فهمت" : "Close"}
-            </Button>
-          </div>
-        </Modal>
-      )}
     </StandardPageLayout>
   );
 }

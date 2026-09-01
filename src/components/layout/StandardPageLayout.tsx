@@ -7,6 +7,10 @@ import { cn } from "@/lib/utils/cn";
 
 export interface StandardPageLayoutProps {
   showHeader?: boolean;
+  title?: string;
+  showBack?: boolean;
+  backHref?: string;
+  onBack?: () => void;
   children: React.ReactNode;
   className?: string;
   onRefresh?: () => Promise<void>;
@@ -15,6 +19,10 @@ export interface StandardPageLayoutProps {
 
 export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
   showHeader = true,
+  title,
+  showBack,
+  backHref,
+  onBack,
   children,
   className,
   onRefresh,
@@ -61,7 +69,15 @@ export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
 
   return (
     <div className="flex flex-col h-full w-full bg-brand-neutral-50 overflow-hidden relative" dir="ltr">
-      {showHeader && <TopHeaderBar onOpenMenu={() => setIsDrawerOpen(true)} />}
+      {showHeader && (
+        <TopHeaderBar
+          title={title}
+          showBack={showBack}
+          backHref={backHref}
+          onBack={onBack}
+          onOpenMenu={() => setIsDrawerOpen(true)}
+        />
+      )}
 
       <SideDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
 

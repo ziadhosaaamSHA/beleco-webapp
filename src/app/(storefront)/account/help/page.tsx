@@ -50,7 +50,7 @@ export default function ContactHelpPage() {
 
   if (!isLangReady) {
     return (
-      <StandardPageLayout>
+      <StandardPageLayout showBack backHref="/account" title={t("account.help")}>
         <HelpPageSkeleton />
       </StandardPageLayout>
     );
@@ -83,7 +83,7 @@ export default function ContactHelpPage() {
   };
 
   return (
-    <StandardPageLayout>
+    <StandardPageLayout showBack backHref="/account" title={t("account.help")}>
       <div className="help-page flex flex-col gap-4 px-4 pt-2 pb-16 animate-page-enter text-left" dir="ltr">
         {/* Header */}
         <div className="flex flex-col gap-1">

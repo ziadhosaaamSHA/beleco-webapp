@@ -128,14 +128,14 @@ export default function NotificationsPage() {
 
   if (!isLangReady || loading) {
     return (
-      <StandardPageLayout>
+      <StandardPageLayout showBack title={t("notif.title")}>
         <NotificationsPageSkeleton />
       </StandardPageLayout>
     );
   }
 
   return (
-    <StandardPageLayout onRefresh={handleRefresh}>
+    <StandardPageLayout showBack title={t("notif.title")} onRefresh={handleRefresh}>
       <div className="notifications-page flex flex-col gap-4 px-4 pt-2 pb-16 animate-page-enter text-left" dir="ltr">
         {/* Header Title & Actions */}
         <div className="flex flex-col gap-3">

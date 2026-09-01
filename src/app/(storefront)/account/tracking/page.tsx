@@ -126,7 +126,7 @@ export default function TrackShipmentsPage() {
   };
 
   return (
-    <StandardPageLayout>
+    <StandardPageLayout showBack backHref="/account" title={t("account.tracking")}>
       <div className="tracking-page flex flex-col gap-4 px-4 pt-2 pb-16 animate-page-enter text-left" dir="ltr">
         {/* Header */}
         <div className="flex flex-col gap-1">
